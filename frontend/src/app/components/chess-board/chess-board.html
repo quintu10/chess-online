@@ -1,0 +1,16 @@
+<div class="board">
+
+  <div class="row" *ngFor="let row of rows">
+    <div 
+        class="square"
+        *ngFor="let column of columns">
+
+        <app-chess-piece
+          *ngIf="getPiece(column + row) as piece"
+          [piece]="piece">
+        </app-chess-piece>
+    </div>
+  </div>
+
+</div>
+
