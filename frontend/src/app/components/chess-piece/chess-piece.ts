@@ -1,4 +1,4 @@
-import { Input,Component } from '@angular/core';
+import { Input,Output,Component, EventEmitter } from '@angular/core';
 import { Piece } from '../../models/piece-model';
 
 @Component({
@@ -10,4 +10,12 @@ import { Piece } from '../../models/piece-model';
 export class ChessPiece {
 
   @Input() piece!: Piece;
+
+  @Input() selected: boolean = false;
+
+  @Output() pieceSelected = new EventEmitter<Piece>();
+
+  selectPiece(){
+    this.pieceSelected.emit(this.piece);
+  }
 }

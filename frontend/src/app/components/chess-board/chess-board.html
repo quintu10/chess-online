@@ -7,7 +7,9 @@
 
         <app-chess-piece
           *ngIf="getPiece(column + row) as piece"
-          [piece]="piece">
+          [piece]="piece"
+          [selected]="selectedPiece?.id === piece.id"
+          (pieceSelected)="selectPiece($event)">
         </app-chess-piece>
     </div>
   </div>
