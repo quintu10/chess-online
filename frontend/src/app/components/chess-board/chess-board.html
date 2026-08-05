@@ -3,6 +3,8 @@
   <div class="row" *ngFor="let row of rows">
     <div 
         class="square"
+        [class.possible-move]="possibleMoves.includes(column + row)"
+        (click)="move(column + row)"
         *ngFor="let column of columns">
 
         <app-chess-piece
@@ -12,6 +14,25 @@
           (pieceSelected)="selectPiece($event)">
         </app-chess-piece>
     </div>
+  </div>
+  <div class="promotion-menu" *ngIf="promotionVisible">
+
+    <div class="promotion-piece"(click)="this.promotePawn('queen')">
+      {{ promotionPawn?.color === 'white' ? '♕' : '♛' }}
+    </div>
+
+    <div class="promotion-piece"(click)="this.promotePawn('rook')">
+      {{ promotionPawn?.color === 'white' ? '♖' : '♜' }}
+    </div>
+
+    <div class="promotion-piece"(click)="this.promotePawn('bishop')">
+      {{ promotionPawn?.color === 'white' ? '♗' : '♝' }}
+    </div>
+
+    <div class="promotion-piece"(click)="this.promotePawn('knight')">
+      {{ promotionPawn?.color === 'white' ? '♘' : '♞' }}
+    </div>
+
   </div>
 
 </div>

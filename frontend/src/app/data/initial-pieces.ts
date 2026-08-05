@@ -5,7 +5,7 @@ export const InitialPieces: Piece[] = [
 
   {
     id: 'black-rook-1',
-    name: 'torre',
+    name: 'rook',
     color: 'black',
     position: 'A8',
     symbol: '♜'
@@ -54,7 +54,7 @@ export const InitialPieces: Piece[] = [
   },
   {
     id: 'black-rook-2',
-    name: 'torre',
+    name: 'rook',
     color: 'black',
     position: 'H8',
     symbol: '♜'
@@ -123,7 +123,7 @@ export const InitialPieces: Piece[] = [
 
   {
     id: 'white-rook-1',
-    name: 'torre',
+    name: 'rook',
     color: 'white',
     position: 'A1',
     symbol: '♖'
@@ -172,7 +172,7 @@ export const InitialPieces: Piece[] = [
   },
   {
     id: 'white-rook-2',
-    name: 'torre',
+    name: 'rook',
     color: 'white',
     position: 'H1',
     symbol: '♖'
