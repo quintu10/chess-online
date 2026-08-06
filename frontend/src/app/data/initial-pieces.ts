@@ -8,114 +8,130 @@ export const InitialPieces: Piece[] = [
     name: 'rook',
     color: 'black',
     position: 'A8',
-    symbol: '♜'
+    symbol: '♜',
+    hasMoved: false,
   },
   {
     id: 'black-knight-1',
-    name: 'caballo',
+    name: 'knight',
     color: 'black',
     position: 'B8',
-    symbol: '♞'
+    symbol: '♞',
+    hasMoved: false,
   },
   {
     id: 'black-bishop-1',
-    name: 'alfil',
+    name: 'bishop',
     color: 'black',
     position: 'C8',
-    symbol: '♝'
+    symbol: '♝',
+    hasMoved: false,
   },
   {
     id: 'black-queen',
-    name: 'reina',
+    name: 'queen',
     color: 'black',
     position: 'D8',
-    symbol: '♛'
+    symbol: '♛',
+    hasMoved: false,
   },
   {
     id: 'black-king',
-    name: 'rey',
+    name: 'king',
     color: 'black',
     position: 'E8',
-    symbol: '♚'
+    symbol: '♚',
+    hasMoved: false,
   },
   {
     id: 'black-bishop-2',
-    name: 'alfil',
+    name: 'bishop',
     color: 'black',
     position: 'F8',
-    symbol: '♝'
+    symbol: '♝',
+    hasMoved: false,
   },
   {
     id: 'black-knight-2',
-    name: 'caballo',
+    name: 'knight',
     color: 'black',
     position: 'G8',
-    symbol: '♞'
+    symbol: '♞',
+    hasMoved: false,
   },
   {
     id: 'black-rook-2',
     name: 'rook',
     color: 'black',
     position: 'H8',
-    symbol: '♜'
+    symbol: '♜',
+    hasMoved: false,
   },
 
 
   {
     id: 'black-pawn-1',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'A7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-2',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'B7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-3',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'C7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-4',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'D7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-5',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'E7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-6',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'F7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-7',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'G7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
   {
     id: 'black-pawn-8',
-    name: 'peon',
+    name: 'pawn',
     color: 'black',
     position: 'H7',
-    symbol: '♟'
+    symbol: '♟',
+    hasMoved: false,
   },
 
 
@@ -126,114 +142,130 @@ export const InitialPieces: Piece[] = [
     name: 'rook',
     color: 'white',
     position: 'A1',
-    symbol: '♖'
+    symbol: '♖',
+    hasMoved: false,
   },
   {
     id: 'white-knight-1',
-    name: 'caballo',
+    name: 'knight',
     color: 'white',
     position: 'B1',
-    symbol: '♘'
+    symbol: '♘',
+    hasMoved: false,
   },
   {
     id: 'white-bishop-1',
-    name: 'alfil',
+    name: 'bishop',
     color: 'white',
     position: 'C1',
-    symbol: '♗'
+    symbol: '♗',
+    hasMoved: false,
   },
   {
     id: 'white-queen',
-    name: 'reina',
+    name: 'queen',
     color: 'white',
     position: 'D1',
-    symbol: '♕'
+    symbol: '♕',
+    hasMoved: false,
   },
   {
     id: 'white-king',
-    name: 'rey',
+    name: 'king',
     color: 'white',
     position: 'E1',
-    symbol: '♔'
+    symbol: '♔',
+    hasMoved: false,
   },
   {
     id: 'white-bishop-2',
-    name: 'alfil',
+    name: 'bishop',
     color: 'white',
     position: 'F1',
-    symbol: '♗'
+    symbol: '♗',
+    hasMoved: false,
   },
   {
     id: 'white-knight-2',
-    name: 'caballo',
+    name: 'knight',
     color: 'white',
     position: 'G1',
-    symbol: '♘'
+    symbol: '♘',
+    hasMoved: false,
   },
   {
     id: 'white-rook-2',
     name: 'rook',
     color: 'white',
     position: 'H1',
-    symbol: '♖'
+    symbol: '♖',
+    hasMoved: false,
   },
 
 
   {
     id: 'white-pawn-1',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'A2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-2',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'B2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-3',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'C2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-4',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'D2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-5',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'E2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-6',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'F2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-7',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'G2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   },
   {
     id: 'white-pawn-8',
-    name: 'peon',
+    name: 'pawn',
     color: 'white',
     position: 'H2',
-    symbol: '♙'
+    symbol: '♙',
+    hasMoved: false,
   }
 
 ]

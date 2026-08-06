@@ -17,7 +17,7 @@ export function getRookMoves(piece: Piece, gameState: GameState, getPiece: (posi
     while(obstaculo === undefined && initialRow + cont <=8){
         let newPosition = (initialColumn + (initialRow + cont))
         
-        obstaculo = getPiece((initialColumn + (initialRow + cont))); 
+        obstaculo = getPiece(newPosition); 
         if(obstaculo !== undefined){
             if(obstaculo.color !== piece.color)
                 moves.push(newPosition)
@@ -35,7 +35,7 @@ export function getRookMoves(piece: Piece, gameState: GameState, getPiece: (posi
     while(obstaculo === undefined && initialRow - cont >= 1){
         let newPosition = (initialColumn + (initialRow - cont))
 
-        obstaculo = getPiece((initialColumn + (initialRow - cont))); 
+        obstaculo = getPiece(newPosition); 
         if(obstaculo !== undefined){
             if(obstaculo.color !== piece.color)
                 moves.push(newPosition)
@@ -53,7 +53,7 @@ export function getRookMoves(piece: Piece, gameState: GameState, getPiece: (posi
     while(obstaculo === undefined && columnIndex - cont >= 0){
         let newPosition = ((COLUMNS[columnIndex - cont]) + initialRow)
 
-        obstaculo = getPiece((COLUMNS[columnIndex - cont]) + initialRow); 
+        obstaculo = getPiece(newPosition); 
         if(obstaculo !== undefined){
             if(obstaculo.color !== piece.color)
                 moves.push(newPosition)
@@ -71,7 +71,7 @@ export function getRookMoves(piece: Piece, gameState: GameState, getPiece: (posi
     while(obstaculo === undefined &&columnIndex + cont <=7){
         let newPosition = ((COLUMNS[columnIndex + cont]) + initialRow)
 
-        obstaculo = getPiece((COLUMNS[columnIndex + cont]) + initialRow); 
+        obstaculo = getPiece(newPosition); 
         if(obstaculo !== undefined){
             if(obstaculo.color !== piece.color)
                 moves.push(newPosition)

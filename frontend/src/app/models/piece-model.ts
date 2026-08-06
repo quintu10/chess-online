@@ -4,4 +4,5 @@ export interface Piece{
     color: string,
     position: string,
     symbol: string,
+    hasMoved: boolean,
 }

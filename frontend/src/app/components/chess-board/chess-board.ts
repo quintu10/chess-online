@@ -71,14 +71,16 @@ export class ChessBoard {
 
     if(this.possibleMoves.includes(position)){
       if(this.chessEngine.movePiece(this.selectedPiece,position)){
-        //Coronacion
-        this.promotionPawn = this.selectedPiece;
-        this.promotionVisible = true;
-        this.isPromotionPending = true;
-        this.pieces = this.chessEngine.getGameState().pieces;
-        this.possibleMoves = [];
+        //Coronacion o Enroque
+        if(this.chessEngine.getPiece(position)?.name === 'pawn'){
+          this.promotionPawn = this.selectedPiece;
+          this.promotionVisible = true;
+          this.isPromotionPending = true;
+          this.pieces = this.chessEngine.getGameState().pieces;
+          this.possibleMoves = [];
 
-        return;
+          return;
+        }
       }
         
         

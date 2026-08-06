@@ -81,7 +81,7 @@ export function getPawnMoves(piece: Piece, gameState: GameState, getPiece: (posi
             return moves;
         
         //Pregunto si la pieza que realizo el ultimo movimiento es un peon
-        if(lastMovePiece.name !== 'peon')
+        if(lastMovePiece.name !== 'pawn')
             return moves;
 
         //Pregunto si el peon que realizo el ultimo movimiento esta a la derecho o a la izquierda

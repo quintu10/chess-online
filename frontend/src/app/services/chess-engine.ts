@@ -6,6 +6,9 @@ import { Move } from '../models/move-model';
 import { getPawnMoves } from '../rules/pawn-rules';
 import { last, lastValueFrom } from 'rxjs';
 import { getRookMoves } from '../rules/rook-rules';
+import { getBishopMoves } from '../rules/bishop-rules';
+import { getQueenMoves } from '../rules/queen-rules';
+import { getKingMoves } from '../rules/king-rules';
 
 @Injectable({
   providedIn: 'root',
@@ -52,11 +55,17 @@ export class ChessEngine {
   //Recibe una pieza y nos devuelve todos sus movimientos posibles
   public getPossibleMoves(piece:Piece): string[]{
      
-    if(piece.name === 'peon')
+    if(piece.name === 'pawn')
       return getPawnMoves(piece,this.getGameState(),this.getPiece.bind(this));
     if(piece.name === 'rook')
       return getRookMoves(piece,this.getGameState(),this.getPiece.bind(this))
-    
+    if(piece.name === 'bishop')
+      return getBishopMoves(piece,this.getGameState(),this.getPiece.bind(this))
+    if(piece.name === 'queen')
+      return getQueenMoves(piece,this.getGameState(),this.getPiece.bind(this))
+    if(piece.name === 'king')
+      return getKingMoves(piece,this.getGameState(),this.getPiece.bind(this))
+
     return [];
     
   }
@@ -90,12 +99,14 @@ export class ChessEngine {
         p => p.position === (newPosition[0] + (Number(newPosition[1]) + direccion))
       )
       
-      if(targetPiece?.name === 'peon'){
+      if(targetPiece?.name === 'pawn'){
         this.gameState.pieces = this.gameState.pieces.filter(
           p => p.id !== targetPiece.id
         )
       }
     }
+
+    const isCastling = this.checkCastling(piece, newPosition);
 
     this.gameState.lastMove = {
       from: piece.position,
@@ -103,14 +114,18 @@ export class ChessEngine {
     }
     piece.position = newPosition;
 
+    
 
-    return this.checkPromotion(piece);
+    if(piece.name === 'pawn')
+      return this.checkPromotion(piece);
+
+    return isCastling;
   }
 
   //Verifica si hay una coronacion de peon y lo dejamos en privado ya que solo lo utilizamos dentro de nuestro motor
   private checkPromotion(piece: Piece): boolean{
     
-    if(piece.name !== 'peon')
+    if(piece.name !== 'pawn')
         return false;
 
     const promotionRow = piece.color === 'white' ? 8 : 1;
@@ -146,7 +161,7 @@ export class ChessEngine {
   }
 
   checkInPassantMove(piece: Piece, newPosition: string): boolean{
-    if(piece.name !== 'peon')
+    if(piece.name !== 'pawn')
       return false;
 
     if(piece.position[0] === newPosition[0])
@@ -169,11 +184,43 @@ export class ChessEngine {
     if(!passantPiece)
       return false;
 
-    if(passantPiece.name === 'peon')
+    if(passantPiece.name === 'pawn')
       return true;
 
     return false;
 
+  }
+
+  checkCastling(piece: Piece, newPosition: string): boolean {
+
+      if(piece.name !== 'king')
+          return false;
+
+      const row = piece.color === 'white' ? 1 : 8;
+
+      if(piece.position === ('E' + row) && newPosition === ('G' + row)){
+          const rookKing = this.gameState.pieces.find(
+              p => p.position === ('H' + row)
+          );
+
+          if(rookKing){
+              rookKing.position = 'F' + row;
+              return true;
+          }
+      }
+
+      if(piece.position === ('E' + row) && newPosition === ('C' + row)){
+          const rookQueen = this.gameState.pieces.find(
+              p => p.position === ('A' + row)
+          );
+
+          if(rookQueen){
+              rookQueen.position = 'D' + row;
+              return true;
+          }
+      }
+      
+      return false;
   }
 
 }
