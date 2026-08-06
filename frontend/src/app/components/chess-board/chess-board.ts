@@ -48,7 +48,7 @@ export class ChessBoard {
     else
       this.selectedPiece = piece;
 
-      this.possibleMoves = this.chessEngine.getPossibleMoves(piece);
+      this.possibleMoves = this.chessEngine.getLegalMoves(piece);
       console.log(this.possibleMoves);
 
   }
