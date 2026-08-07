@@ -112,12 +112,6 @@ export class ChessEngine {
     const targetPiece = this.gameState.pieces.find(
       p => p.position === newPosition
     )
-
-    if(targetPiece){
-      this.gameState.pieces = this.gameState.pieces.filter(
-        p => p.id  !== targetPiece.id
-      )
-    }
     
     const isPassantMove = this.checkInPassantMove(piece, newPosition);
     if(isPassantMove){
@@ -133,6 +127,12 @@ export class ChessEngine {
       }
     }
 
+    if(targetPiece){
+      this.gameState.pieces = this.gameState.pieces.filter(
+        p => p.id  !== targetPiece.id
+      )
+    }
+
     const isCastling = this.checkCastling(piece, newPosition);
 
     this.gameState.lastMove = {
@@ -146,6 +146,14 @@ export class ChessEngine {
 
     if(this.isCheckMate(enemyColor)){
         console.log('Jaque mate');
+        this.gameState.status = 'checkmate';
+        return false;
+    }
+
+    if(this.isStalemate(enemyColor)){
+      console.log('Rey ahogado');
+      this.gameState.status = 'draw';
+      return false;
     }
 
     if(piece.name === 'pawn')
@@ -216,6 +224,9 @@ export class ChessEngine {
     )
 
     if(!passantPiece)
+      return false;
+
+    if(passantPiece.color === piece.color)
       return false;
 
     if(passantPiece.name === 'pawn')
@@ -315,6 +326,35 @@ export class ChessEngine {
     
 
     return true;
+  }
+
+  private isStalemate(color: string):boolean{
+    const king = this.gameState.pieces.find(
+      p => p.color === color && p.name === 'king'
+    );
+
+    const enemyColor = color === 'white' ? 'black' : 'white';
+
+    if(!king)
+      return false;
+      
+    if(this.isKingInCheck(king.position,enemyColor))
+      return false;
+    
+    const colorPieces = this.gameState.pieces.filter(
+      p => p.color === color
+    )
+
+    for( let i = 0; i < colorPieces.length; i++ ){
+      const legalMoves = this.getLegalMoves(colorPieces[i]);
+
+      if(legalMoves.length > 0 )
+        return false
+    }
+    
+
+    return true;
+      
   }
 
   //Recibe una pieza y una posiocion para simular un movimiento y guardarnos un backup para devolverlo con undoMove()
