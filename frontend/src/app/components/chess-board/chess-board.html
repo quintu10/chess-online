@@ -1,38 +1,47 @@
-<div class="board">
+<div class="board-wrapper">
 
-  <div class="row" *ngFor="let row of rows">
-    <div 
-        class="square"
-        [class.possible-move]="possibleMoves.includes(column + row)"
-        (click)="move(column + row)"
-        *ngFor="let column of columns">
+  <div class="board-frame">
 
-        <app-chess-piece
-          *ngIf="getPiece(column + row) as piece"
-          [piece]="piece"
-          [selected]="selectedPiece?.id === piece.id"
-          (pieceSelected)="selectPiece($event)">
-        </app-chess-piece>
+    <div class="board">
+
+      <div class="row" *ngFor="let row of rows">
+        <div 
+            class="square"
+            [class.possible-move]="possibleMoves.includes(column + row)"
+            (click)="move(column + row)"
+            *ngFor="let column of columns">
+
+            <app-chess-piece
+              *ngIf="getPiece(column + row) as piece"
+              [piece]="piece"
+              [selected]="selectedPiece?.id === piece.id"
+              (pieceSelected)="selectPiece($event)">
+            </app-chess-piece>
+        </div>
+      </div>
+
+      <div class="promotion-menu" *ngIf="promotionVisible">
+
+        <div class="promotion-piece"(click)="this.promotePawn('queen')">
+          {{ promotionPawn?.color === 'white' ? '♕' : '♛' }}
+        </div>
+
+        <div class="promotion-piece"(click)="this.promotePawn('rook')">
+          {{ promotionPawn?.color === 'white' ? '♖' : '♜' }}
+        </div>
+
+        <div class="promotion-piece"(click)="this.promotePawn('bishop')">
+          {{ promotionPawn?.color === 'white' ? '♗' : '♝' }}
+        </div>
+
+        <div class="promotion-piece"(click)="this.promotePawn('knight')">
+          {{ promotionPawn?.color === 'white' ? '♘' : '♞' }}
+        </div>
+
+      </div>
+
     </div>
-  </div>
-  <div class="promotion-menu" *ngIf="promotionVisible">
-
-    <div class="promotion-piece"(click)="this.promotePawn('queen')">
-      {{ promotionPawn?.color === 'white' ? '♕' : '♛' }}
-    </div>
-
-    <div class="promotion-piece"(click)="this.promotePawn('rook')">
-      {{ promotionPawn?.color === 'white' ? '♖' : '♜' }}
-    </div>
-
-    <div class="promotion-piece"(click)="this.promotePawn('bishop')">
-      {{ promotionPawn?.color === 'white' ? '♗' : '♝' }}
-    </div>
-
-    <div class="promotion-piece"(click)="this.promotePawn('knight')">
-      {{ promotionPawn?.color === 'white' ? '♘' : '♞' }}
-    </div>
-
+  
   </div>
 
 </div>

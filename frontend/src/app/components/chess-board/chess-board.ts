@@ -86,6 +86,12 @@ export class ChessBoard {
         
       this.pieces = this.chessEngine.getGameState().pieces;
 
+      if(this.chessEngine.getGameState().status === 'draw'){
+        console.log("Empate");
+      }else if(this.chessEngine.getGameState().status === 'checkmate'){
+        console.log([this.chessEngine.getGameState().turn]  + " wins")
+      }
+
       this.selectedPiece = null;
       this.possibleMoves = [];
 

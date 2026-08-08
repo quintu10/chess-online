@@ -1,11 +1,19 @@
 .board {
 
-  width: 640px;
-  height: 640px;
+  width: clamp(320px, 70vw, 640px);
+  aspect-ratio: 1 / 1;
 
-  border: 6px solid #3b2414;
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border-radius: 6px;
 
   position: relative;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.5);
 
 }
 
@@ -14,6 +22,7 @@
 
   display: flex;
 
+  width: 100%;
   height: 12.5%;
 
 }
@@ -21,7 +30,7 @@
 
 .square {
 
-  width: 12.5%;
+  width: 12.5%; 
   height: 100%;
 
   display: flex;
@@ -30,7 +39,17 @@
 
   position: relative;
 
-  background-color: #f0d9b5;
+  cursor: pointer;
+
+  user-select: none;
+
+  background-color: #e2c79d;
+
+}
+
+.square:hover {
+
+  filter: brightness(1.08);
 
 }
 
@@ -49,7 +68,7 @@
   width: 18px;
   height: 18px;
 
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0,0,0,0.35);
 
   border-radius: 50%;
 
@@ -65,7 +84,7 @@
   width: 80%;
   height: 80%;
 
-  border: 4px solid rgba(180, 40, 40, 0.6);
+  border: 4px solid rgba(180, 40, 40, 0.65);
 
   border-radius: 50%;
 
@@ -94,7 +113,7 @@
 
   border-radius: 12px;
 
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
 
   z-index: 100;
 
@@ -103,14 +122,14 @@
 
 .promotion-piece {
 
-  width: 70px;
-  height: 70px;
+  width: clamp(50px,8vw,70px);
+  height: clamp(50px,8vw,70px);
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  font-size: 50px;
+  font-size: clamp(35px,6vw,50px);
 
   cursor: pointer;
 
@@ -128,5 +147,36 @@
   background-color: #d8c29b;
 
   transform: scale(1.1);
+
+}
+
+.board-wrapper {
+
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+
+}
+
+
+.board-frame {
+
+  padding: 10px;
+
+  background: linear-gradient(
+    145deg,
+    #4b2e18,
+    #1c1209
+  );
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.7),
+    inset 0 0 15px rgba(255,255,255,0.08);
 
 }
