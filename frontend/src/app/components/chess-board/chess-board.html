@@ -1,41 +1,112 @@
 <div class="board-wrapper">
 
   <div class="board-frame">
+  
+    <div class="game-area">
 
-    <div class="board">
+      <div class="board-container"> 
+        
+        <div class="board-with-rows"> 
+          
+          <div class="row-labels"> 
+            <span *ngFor="let row of rows"> {{ row }} </span> 
+          </div>
 
-      <div class="row" *ngFor="let row of rows">
-        <div 
-            class="square"
-            [class.possible-move]="possibleMoves.includes(column + row)"
-            (click)="move(column + row)"
-            *ngFor="let column of columns">
+          <div class="board">
 
-            <app-chess-piece
-              *ngIf="getPiece(column + row) as piece"
-              [piece]="piece"
-              [selected]="selectedPiece?.id === piece.id"
-              (pieceSelected)="selectPiece($event)">
-            </app-chess-piece>
+            <div class="row" *ngFor="let row of rows">
+              <div 
+                  class="square"
+                  [class.possible-move]="possibleMoves.includes(column + row)"
+                  (click)="move(column + row)"
+                  *ngFor="let column of columns">
+
+                  <app-chess-piece
+                    *ngIf="getPiece(column + row) as piece"
+                    [piece]="piece"
+                    [selected]="selectedPiece?.id === piece.id"
+                    (pieceSelected)="selectPiece($event)">
+                  </app-chess-piece>  
+              </div>
+            </div>
+
+            <div class="promotion-menu" *ngIf="promotionVisible">
+
+              <div class="promotion-piece"(click)="this.promotePawn('queen')">
+                <img
+                  [src]="getPieceImage(promotionPawn?.color,'queen')"
+                  [alt]="promotionPawn?.color"
+                >
+              </div>
+
+              <div class="promotion-piece"(click)="this.promotePawn('rook')">
+                <img
+                  [src]="getPieceImage(promotionPawn?.color,'rook')"
+                  [alt]="promotionPawn?.color"
+                >
+              </div>
+
+              <div class="promotion-piece"(click)="this.promotePawn('bishop')">
+                <img
+                  [src]="getPieceImage(promotionPawn?.color,'bishop')"
+                  [alt]="promotionPawn?.color"
+                >
+              </div>
+
+              <div class="promotion-piece"(click)="this.promotePawn('knight')">
+                <img
+                  [src]="getPieceImage(promotionPawn?.color,'knight')"
+                  [alt]="promotionPawn?.color"
+                >
+              </div>
+          
+            </div>
+      
+          </div> 
+        
         </div>
+        
+        <div class="column-labels bottom-labels"> 
+            <span *ngFor="let column of columns"> {{ column }} </span> 
+        </div>         
+
       </div>
 
-      <div class="promotion-menu" *ngIf="promotionVisible">
+      <div class="move-history">
 
-        <div class="promotion-piece"(click)="this.promotePawn('queen')">
-          {{ promotionPawn?.color === 'white' ? '♕' : '♛' }}
+        <h3>Movimientos</h3>
+
+        <div class="move-row header-row">
+
+          <span class="move-number"></span>
+
+          <span class="white-move">
+            White
+          </span>
+
+          <span class="black-move">
+            Black
+          </span>
+
         </div>
 
-        <div class="promotion-piece"(click)="this.promotePawn('rook')">
-          {{ promotionPawn?.color === 'white' ? '♖' : '♜' }}
-        </div>
+        <div
+          class="move-row"
+          *ngFor="let move of moveHistory; let i = index"
+          [style.display]="i % 2 === 0 ? 'grid' : 'none'">
 
-        <div class="promotion-piece"(click)="this.promotePawn('bishop')">
-          {{ promotionPawn?.color === 'white' ? '♗' : '♝' }}
-        </div>
+          <span class="move-number">
+            {{ (i / 2) + 1 }}.
+          </span>
 
-        <div class="promotion-piece"(click)="this.promotePawn('knight')">
-          {{ promotionPawn?.color === 'white' ? '♘' : '♞' }}
+          <span class="white-move">
+            {{ move }}
+          </span>
+
+          <span class="black-move">
+            {{ moveHistory[i + 1] || '' }}
+          </span>
+
         </div>
 
       </div>

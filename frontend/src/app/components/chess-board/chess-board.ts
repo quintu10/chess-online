@@ -7,10 +7,11 @@ import { CommonModule } from '@angular/common';
 import { ChessEngine } from '../../services/chess-engine';
 import { OnInit } from '@angular/core';
 import { Move } from '../../models/move-model';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-chess-board',
-  imports: [NgFor,ChessPiece,NgIf],
+  imports: [NgFor, ChessPiece, NgIf, RouterLink],
   templateUrl: './chess-board.html',
   styleUrl: './chess-board.scss',
 })
@@ -23,6 +24,8 @@ export class ChessBoard {
   
   pieces: Piece[] = [];
   possibleMoves: string[] = [];
+  
+  moveHistory: string[] = [];
 
   promotionVisible = false;
   isPromotionPending = false;
@@ -70,6 +73,8 @@ export class ChessBoard {
       return;
 
     if(this.possibleMoves.includes(position)){
+      const movement = `${this.selectedPiece.position} → ${position}`
+      this.moveHistory.push(movement)
       if(this.chessEngine.movePiece(this.selectedPiece,position)){
         //Coronacion o Enroque
         if(this.chessEngine.getPiece(position)?.name === 'pawn'){
@@ -118,5 +123,8 @@ export class ChessBoard {
 
   }
   
+  getPieceImage(color: string | undefined, piece: string):string{
+    return `assets/pieces/${color}-${piece}.png`
+  }
 
 }

@@ -1,9 +1,10 @@
-<div 
+<div
   class="piece"
-  [class.white]="piece.color === 'white'"
-  [class.black]="piece.color === 'black'"
   [class.selected]="selected"
-  (click)="selectPiece()">
-    
-  {{ piece.symbol }}
+  (click)="selectPiece()"
+>
+  <img
+    [src]="getPieceImage()"
+    [alt]="piece.color + ' ' + piece.name"
+  >
 </div>

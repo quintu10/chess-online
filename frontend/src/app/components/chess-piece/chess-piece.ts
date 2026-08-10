@@ -18,4 +18,31 @@ export class ChessPiece {
   selectPiece(){
     this.pieceSelected.emit(this.piece);
   }
+
+  getPieceImage():string{
+    const color = this.piece.color === 'white' ? 'white' : 'black';
+
+    const piece = this.getPieceName(this.piece.name);
+
+    return `assets/pieces/${color}-${piece}.png`
+  }
+
+
+  getPieceName(name: string): string{
+    if(name === 'pawn')
+      return 'pawn'
+    if(name === 'rook')
+      return 'rook'
+    if(name === 'knight')
+      return 'knight';
+    if(name === 'bishop')
+      return 'bishop';
+    if(name === 'queen')
+      return 'queen';
+    if(name === 'king')
+      return 'king';
+
+    return 'pawn';
+
+  }
 }
