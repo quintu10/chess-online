@@ -1,243 +1,245 @@
-<h1>Chess Online</h1>
+<div class="board-page">
+  <h1>Chess Online</h1>
 
-<div class="game-mode">
-  <span class="mode-icon">👥︎</span>
-  <span>Partida local</span>
-</div>
+  <div class="game-mode">
+    <span class="mode-icon">👥︎</span>
+    <span>Partida local</span>
+  </div>
 
-<div class="user-status">
-  <div class="profile-circle">
+  <div class="user-status">
+    <div class="profile-circle">
+
+    </div>
+
+    <div class="user-info">
+      <span class="username">Usuario</span>
+
+      <span class="status">
+        <span class="status-dot"></span>
+        Online
+      </span>
+    </div>
+
+    <span class="user-arrow">▾</span>
 
   </div>
 
-  <div class="user-info">
-    <span class="username">Usuario</span>
+  <div class="board-wrapper">
 
-    <span class="status">
-      <span class="status-dot"></span>
-      Online
-    </span>
-  </div>
+    <div class="side-panel">
 
-  <span class="user-arrow">▾</span>
+      <div class="panel-section">
 
-</div>
+        <h3>PARTIDA</h3>
 
-<div class="board-wrapper">
+        <button class="panel-button">
+          <span class="icon">♟</span>
+          <span>Nueva partida</span>
+        </button>
 
-  <div class="side-panel">
+        <button class="panel-button">
+          <span class="icon">◈</span>
+          <span>Partida actual</span>
+        </button>
 
-    <div class="panel-section">
-
-      <h3>PARTIDA</h3>
-
-      <button class="panel-button">
-        <span class="icon">♟</span>
-        <span>Nueva partida</span>
-      </button>
-
-      <button class="panel-button">
-        <span class="icon">◈</span>
-        <span>Partida actual</span>
-      </button>
-
-    </div>
+      </div>
 
 
-    <div class="panel-section">
+      <div class="panel-section">
 
-      <h3>JUEGO</h3>
+        <h3>JUEGO</h3>
 
-      <button class="panel-button">
-        <span class="icon">▣</span>
-        <span>Mis partidas</span>
-      </button>
+        <button class="panel-button">
+          <span class="icon">▣</span>
+          <span>Mis partidas</span>
+        </button>
 
-      <button class="panel-button">
-        <span class="icon">♜</span>
-        <span>Historial</span>
-      </button>
+        <button class="panel-button">
+          <span class="icon">♜</span>
+          <span>Historial</span>
+        </button>
 
-      <button class="panel-button">
-        <span class="icon">★</span>
-        <span>Estadísticas</span>
-      </button>
+        <button class="panel-button">
+          <span class="icon">★</span>
+          <span>Estadísticas</span>
+        </button>
 
-    </div>
-
-
-    <div class="panel-section">
-
-      <h3>SOCIAL</h3>
-
-      <button class="panel-button">
-        <span class="icon">♙</span>
-        <span>Amigos</span>
-      </button>
-
-      <button class="panel-button">
-        <span class="icon">✉</span>
-        <span>Invitaciones</span>
-      </button>
-
-    </div>
+      </div>
 
 
-    <div class="panel-bottom">
+      <div class="panel-section">
 
-      <button class="panel-button">
-        <span class="icon">⚙</span>
-        <span>Configuración</span>
-      </button>
+        <h3>SOCIAL</h3>
 
-      <button class="panel-button logout">
-        <span class="icon">⇥</span>
-        <span>Cerrar sesión</span>
-      </button>
+        <button class="panel-button">
+          <span class="icon">♙</span>
+          <span>Amigos</span>
+        </button>
+
+        <button class="panel-button">
+          <span class="icon">✉</span>
+          <span>Invitaciones</span>
+        </button>
+
+      </div>
+
+
+      <div class="panel-bottom">
+
+        <button class="panel-button">
+          <span class="icon">⚙</span>
+          <span>Configuración</span>
+        </button>
+
+        <button class="panel-button logout">
+          <span class="icon">⇥</span>
+          <span>Cerrar sesión</span>
+        </button>
+
+      </div>
 
     </div>
 
-  </div>
 
+    <div class="board-frame">
+    
+      <div class="game-area">
 
-  <div class="board-frame">
-  
-    <div class="game-area">
-
-      <div class="board-container"> 
-        
-        <div class="board-with-rows"> 
+        <div class="board-container"> 
           
-          <div class="row-labels"> 
-            <span *ngFor="let row of rows"> {{ row }} </span> 
+          <div class="board-with-rows"> 
+            
+            <div class="row-labels"> 
+              <span *ngFor="let row of rows"> {{ row }} </span> 
+            </div>
+
+            <div class="board">
+
+              <div class="row" *ngFor="let row of rows">
+                <div 
+                    class="square"
+                    [class.possible-move]="possibleMoves.includes(column + row)"
+                    (click)="move(column + row)"
+                    *ngFor="let column of columns">
+
+                    <app-chess-piece
+                      *ngIf="getPiece(column + row) as piece"
+                      [piece]="piece"
+                      [selected]="selectedPiece?.id === piece.id"
+                      (pieceSelected)="selectPiece($event)">
+                    </app-chess-piece>  
+                </div>
+              </div>
+
+              <div class="promotion-menu" *ngIf="promotionVisible">
+
+                <div class="promotion-piece"(click)="this.promotePawn('queen')">
+                  <img
+                    [src]="getPieceImage(promotionPawn?.color,'queen')"
+                    [alt]="promotionPawn?.color"
+                  >
+                </div>
+
+                <div class="promotion-piece"(click)="this.promotePawn('rook')">
+                  <img
+                    [src]="getPieceImage(promotionPawn?.color,'rook')"
+                    [alt]="promotionPawn?.color"
+                  >
+                </div>
+
+                <div class="promotion-piece"(click)="this.promotePawn('bishop')">
+                  <img
+                    [src]="getPieceImage(promotionPawn?.color,'bishop')"
+                    [alt]="promotionPawn?.color"
+                  >
+                </div>
+
+                <div class="promotion-piece"(click)="this.promotePawn('knight')">
+                  <img
+                    [src]="getPieceImage(promotionPawn?.color,'knight')"
+                    [alt]="promotionPawn?.color"
+                  >
+                </div>
+            
+              </div>
+        
+            </div> 
+          
+          </div>
+          
+          <div class="column-labels bottom-labels"> 
+              <span *ngFor="let column of columns"> {{ column }} </span> 
+          </div>         
+
+        </div>
+
+        <div class="move-history">
+
+          <h3>Movimientos</h3>
+
+          <div class="move-row header-row">
+
+            <span class="move-number"></span>
+
+            <span class="white-move">
+              White
+            </span>
+
+            <span class="black-move">
+              Black
+            </span>
+
           </div>
 
-          <div class="board">
+          <div
+            class="move-row"
+            *ngFor="let move of moveHistory; let i = index"
+            [style.display]="i % 2 === 0 ? 'grid' : 'none'">
 
-            <div class="row" *ngFor="let row of rows">
-              <div 
-                  class="square"
-                  [class.possible-move]="possibleMoves.includes(column + row)"
-                  (click)="move(column + row)"
-                  *ngFor="let column of columns">
+            <span class="move-number">
+              {{ (i / 2) + 1 }}.
+            </span>
 
-                  <app-chess-piece
-                    *ngIf="getPiece(column + row) as piece"
-                    [piece]="piece"
-                    [selected]="selectedPiece?.id === piece.id"
-                    (pieceSelected)="selectPiece($event)">
-                  </app-chess-piece>  
-              </div>
-            </div>
+            <span class="white-move">
+              {{ move }}
+            </span>
 
-            <div class="promotion-menu" *ngIf="promotionVisible">
+            <span class="black-move">
+              {{ moveHistory[i + 1] || '' }}
+            </span>
 
-              <div class="promotion-piece"(click)="this.promotePawn('queen')">
-                <img
-                  [src]="getPieceImage(promotionPawn?.color,'queen')"
-                  [alt]="promotionPawn?.color"
-                >
-              </div>
-
-              <div class="promotion-piece"(click)="this.promotePawn('rook')">
-                <img
-                  [src]="getPieceImage(promotionPawn?.color,'rook')"
-                  [alt]="promotionPawn?.color"
-                >
-              </div>
-
-              <div class="promotion-piece"(click)="this.promotePawn('bishop')">
-                <img
-                  [src]="getPieceImage(promotionPawn?.color,'bishop')"
-                  [alt]="promotionPawn?.color"
-                >
-              </div>
-
-              <div class="promotion-piece"(click)="this.promotePawn('knight')">
-                <img
-                  [src]="getPieceImage(promotionPawn?.color,'knight')"
-                  [alt]="promotionPawn?.color"
-                >
-              </div>
-          
-            </div>
-      
-          </div> 
-        
-        </div>
-        
-        <div class="column-labels bottom-labels"> 
-            <span *ngFor="let column of columns"> {{ column }} </span> 
-        </div>         
-
-      </div>
-
-      <div class="move-history">
-
-        <h3>Movimientos</h3>
-
-        <div class="move-row header-row">
-
-          <span class="move-number"></span>
-
-          <span class="white-move">
-            White
-          </span>
-
-          <span class="black-move">
-            Black
-          </span>
-
-        </div>
-
-        <div
-          class="move-row"
-          *ngFor="let move of moveHistory; let i = index"
-          [style.display]="i % 2 === 0 ? 'grid' : 'none'">
-
-          <span class="move-number">
-            {{ (i / 2) + 1 }}.
-          </span>
-
-          <span class="white-move">
-            {{ move }}
-          </span>
-
-          <span class="black-move">
-            {{ moveHistory[i + 1] || '' }}
-          </span>
+          </div>
 
         </div>
 
       </div>
 
+      <div class="board-actions">
+
+        <button class="game-button">
+          ↶
+          <span>Deshacer</span>
+        </button>
+
+        <button class="game-button">
+          ↷
+          <span>Rehacer</span>
+        </button>
+
+        <button class="game-button">
+          ⟳
+          <span>Nueva partida</span>
+        </button>
+
+        <button class="game-button">
+          ⚙
+          <span>Configuración</span>
+        </button>
+
+      </div>
+    
     </div>
 
-    <div class="board-actions">
-
-      <button class="game-button">
-        ↶
-        <span>Deshacer</span>
-      </button>
-
-      <button class="game-button">
-        ↷
-        <span>Rehacer</span>
-      </button>
-
-      <button class="game-button">
-        ⟳
-        <span>Nueva partida</span>
-      </button>
-
-      <button class="game-button">
-        ⚙
-        <span>Configuración</span>
-      </button>
-
-    </div>
-  
   </div>
 
 </div>
-
