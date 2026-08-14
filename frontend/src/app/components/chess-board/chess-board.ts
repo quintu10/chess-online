@@ -8,10 +8,11 @@ import { ChessEngine } from '../../services/chess-engine';
 import { OnInit } from '@angular/core';
 import { Move } from '../../models/move-model';
 import { RouterLink } from "@angular/router";
+import { GameResult } from '../game-result/game-result';
 
 @Component({
   selector: 'app-chess-board',
-  imports: [NgFor, ChessPiece, NgIf, RouterLink],
+  imports: [NgFor, ChessPiece, NgIf, RouterLink, GameResult],
   templateUrl: './chess-board.html',
   styleUrl: './chess-board.scss',
 })
@@ -31,6 +32,8 @@ export class ChessBoard {
   isPromotionPending = false;
   promotionPawn: Piece | null = null;
 
+  gameResult: 'white' | 'black' | 'draw' | null = null;
+
   ngOnInit(){
     this.chessEngine.startGame()
 
@@ -41,6 +44,9 @@ export class ChessBoard {
 
   selectPiece(piece: Piece){
 
+    if(this.chessEngine.getGameState().status !== 'playing')
+      return;
+    
     if(this.isPromotionPending)
       return;
 
@@ -66,6 +72,7 @@ export class ChessBoard {
 
   //Realiza el movimiento que el usuario eligio dentro de lo permitido
   move(position: string){
+
     if(this.isPromotionPending)
       return;
     
@@ -93,14 +100,17 @@ export class ChessBoard {
 
       if(this.chessEngine.getGameState().status === 'draw'){
         console.log("Empate");
+        this.gameResult = 'draw';
       }else if(this.chessEngine.getGameState().status === 'checkmate'){
         console.log([this.chessEngine.getGameState().turn]  + " wins")
+        const turn = this.chessEngine.getGameState().turn;
+        this.gameResult = turn; 
       }
 
       this.selectedPiece = null;
       this.possibleMoves = [];
-
-      this.chessEngine.changeTurn()
+      if(this.chessEngine.getGameState().status === 'playing')
+        this.chessEngine.changeTurn()
     }
   }
 
@@ -125,6 +135,28 @@ export class ChessBoard {
   
   getPieceImage(color: string | undefined, piece: string):string{
     return `assets/pieces/${color}-${piece}.png`
+  }
+
+  nuevaPartida(){
+    if(this.chessEngine.getGameState().status === 'playing'){
+      //selector
+    }
+    else{
+      this.chessEngine.startGame();
+      this.pieces = this.chessEngine.getGameState().pieces;
+      
+      this.promotionPawn = null;
+      this.promotionVisible = false;
+      this.isPromotionPending = false;
+      
+      this.selectedPiece = null;
+      this.possibleMoves = [];
+
+      this.gameResult = null;
+      
+      this.moveHistory = [];
+
+    }
   }
 
 }

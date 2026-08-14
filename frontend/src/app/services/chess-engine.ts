@@ -23,7 +23,7 @@ export class ChessEngine {
   //Inicia el juego
   public startGame(){
     this.gameState = {
-      pieces: InitialPieces,
+      pieces: InitialPieces.map(piece => ({...piece})),
       turn: 'white',
       status:'playing',
       lastMove: null,
