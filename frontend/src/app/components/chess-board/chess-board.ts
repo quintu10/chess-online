@@ -25,6 +25,8 @@ export class ChessBoard {
   
   pieces: Piece[] = [];
   possibleMoves: string[] = [];
+
+  newGameConfirmation: boolean = false;
   
   moveHistory: string[] = [];
 
@@ -138,8 +140,8 @@ export class ChessBoard {
   }
 
   nuevaPartida(){
-    if(this.chessEngine.getGameState().status === 'playing'){
-      //selector
+    if(this.chessEngine.getGameState().lastMove !== null){
+      this.newGameConfirmation = true;
     }
     else{
       this.chessEngine.startGame();
@@ -155,7 +157,62 @@ export class ChessBoard {
       this.gameResult = null;
       
       this.moveHistory = [];
+    }
+  }
 
+  confirmarNuevaPartida(){
+    this.chessEngine.startGame();
+    this.pieces = this.chessEngine.getGameState().pieces;
+      
+    this.promotionPawn = null;
+    this.promotionVisible = false;
+    this.isPromotionPending = false;
+      
+    this.selectedPiece = null;
+    this.possibleMoves = [];
+
+    this.gameResult = null;
+      
+    this.moveHistory = [];
+
+    this.cerrarSelector();
+  }
+
+  cerrarSelector(){
+    this.newGameConfirmation = false;
+  }
+
+  undoMove(){
+    this.gameResult = null;
+    this.selectedPiece = null;
+    this.possibleMoves = [];
+    this.moveHistory.pop()!;
+    this.chessEngine.undo();
+    this.pieces = this.chessEngine.getGameState().pieces;
+  }
+
+  redoMove(){
+    this.selectedPiece = null;
+    this.possibleMoves = [];
+
+    if(!this.chessEngine.canRedo()){
+      return;
+    }
+    this.chessEngine.redo();
+    this.pieces = this.chessEngine.getGameState().pieces;
+
+    if (this.chessEngine.getGameState().lastMove) {
+      this.moveHistory.push(
+        `${this.chessEngine.getGameState().lastMove?.from} → ${this.chessEngine.getGameState().lastMove?.to}`
+      );
+    }
+    
+    if (this.chessEngine.getGameState().status === 'checkmate') {
+      this.gameResult = this.chessEngine.getGameState().turn;
+    } else if (this.chessEngine.getGameState().status === 'draw') {
+      this.gameResult = 'draw';
+    } else {
+      this.gameResult = null;
     }
   }
 

@@ -136,6 +136,26 @@
                 </div>
               </div>
 
+              <div class="confirmation-modal" *ngIf="newGameConfirmation">
+                <div class="confirmation-content">
+
+                  <h2>¿Nueva partida?</h2>
+
+                  <p>¿Estás seguro de que querés comenzar una nueva partida?</p>
+
+                  <div class="confirmation-buttons">
+                    <button class="cancel-button" (click)="cerrarSelector()">
+                      Cancelar
+                    </button>
+
+                    <button class="confirm-button" (click)="confirmarNuevaPartida()">
+                      Nueva partida
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
               <div class="promotion-menu" *ngIf="promotionVisible">
 
                 <div class="promotion-piece"(click)="this.promotePawn('queen')">
@@ -221,12 +241,12 @@
 
       <div class="board-actions">
 
-        <button class="game-button">
+        <button class="game-button" (click)="undoMove()">
           ↶
           <span>Deshacer</span>
         </button>
 
-        <button class="game-button">
+        <button class="game-button" (click)="redoMove()">
           ↷
           <span>Rehacer</span>
         </button>

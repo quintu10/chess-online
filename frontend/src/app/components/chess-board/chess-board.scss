@@ -837,3 +837,75 @@ h1::after {
   font-size: 18px;
   cursor: pointer;
 }
+
+
+.confirmation-modal {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.65);
+
+  z-index: 1000;
+}
+
+.confirmation-content {
+  width: min(90%, 400px);
+
+  padding: 30px;
+
+  text-align: center;
+
+  background: #2b1a0f;
+  border: 2px solid #c29b62;
+  border-radius: 12px;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.confirmation-content h2 {
+  margin: 0 0 15px;
+  color: #e8c994;
+}
+
+.confirmation-content p {
+  margin-bottom: 25px;
+  color: #ddd;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.confirmation-buttons button {
+  padding: 10px 20px;
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background: #555;
+  color: white;
+}
+
+.confirm-button {
+  background: #8b5e34;
+  color: white;
+}
+
+.cancel-button:hover {
+  background: #666;
+}
+
+.confirm-button:hover {
+  background: #a87343;
+}

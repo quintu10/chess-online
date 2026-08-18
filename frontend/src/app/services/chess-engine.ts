@@ -11,15 +11,18 @@ import { getQueenMoves } from '../rules/queen-rules';
 import { getKingMoves } from '../rules/king-rules';
 import { getKnightMoves } from '../rules/knight-rules';
 import { moveBackup } from '../models/move-backup';
+import { publishFacade } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
+  
 })
 export class ChessEngine {
 
   private gameState!: GameState;
+  private undoStack: GameState [] = [];
+  private redoStack: GameState [] = [];
 
-  
   //Inicia el juego
   public startGame(){
     this.gameState = {
@@ -108,6 +111,10 @@ export class ChessEngine {
 
   //Recibe una pieza y la mueve hacia la posicion q recibio
   public movePiece(piece: Piece, newPosition: string): boolean{
+
+    this.undoStack.push({...this.gameState,pieces: this.gameState.pieces.map(piece =>({...piece}))}); //Hago una copia de todas las piezas y 
+                                                                                                      //el estado de juego en ese momento
+    this.redoStack = [];
     
     const targetPiece = this.gameState.pieces.find(
       p => p.position === newPosition
@@ -141,7 +148,7 @@ export class ChessEngine {
     }
     piece.position = newPosition;
     piece.hasMoved = true;
-
+                                                                                                      
     const enemyColor = piece.color === 'white' ? 'black' : 'white';
 
     if(this.isCheckMate(enemyColor)){
@@ -442,6 +449,28 @@ export class ChessEngine {
       backup.rook.position = String(backup.rookOldPosition);
       backup.rook.hasMoved = Boolean(backup.rookHasMoved);
     }
+  }
+
+  public undo(){
+    if(this.undoStack.length === 0){
+      return;
+    }
+    this.redoStack.push({...this.gameState, pieces: this.gameState.pieces.map(piece => ({...piece}))}); //Hace la copia de todas las piezas en ese momento
+    this.gameState = this.undoStack.pop()!;
+
+  }
+
+  public redo(){
+    if(this.redoStack.length === 0){
+      return;
+    }
+    this.undoStack.push({...this.gameState, pieces: this.gameState.pieces.map(piece => ({...piece}))});
+    this.gameState = this.redoStack.pop()!;
+
+    }
+
+  public canRedo(): boolean {           //Usamos este metodo para no exponer a redostack
+    return this.redoStack.length > 0;
   }
 
 }
