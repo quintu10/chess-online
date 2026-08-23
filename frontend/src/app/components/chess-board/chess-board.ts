@@ -9,6 +9,7 @@ import { OnInit } from '@angular/core';
 import { Move } from '../../models/move-model';
 import { RouterLink } from "@angular/router";
 import { GameResult } from '../game-result/game-result';
+import { Session } from '../../services/session';
 
 @Component({
   selector: 'app-chess-board',
@@ -21,7 +22,7 @@ export class ChessBoard {
   rows = [8, 7, 6, 5, 4, 3, 2, 1];
   columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
-  constructor(private chessEngine: ChessEngine){}
+  constructor(private chessEngine: ChessEngine, public sesionService: Session){}
   
   pieces: Piece[] = [];
   possibleMoves: string[] = [];

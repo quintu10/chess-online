@@ -30,26 +30,9 @@
 
       <div class="panel-section">
 
-        <h3>PARTIDA</h3>
-
-        <button class="panel-button">
-          <span class="icon">♟</span>
-          <span>Nueva partida</span>
-        </button>
-
-        <button class="panel-button">
-          <span class="icon">◈</span>
-          <span>Partida actual</span>
-        </button>
-
-      </div>
-
-
-      <div class="panel-section">
-
         <h3>JUEGO</h3>
 
-        <button class="panel-button">
+        <button *ngIf="sesionService.gameMode === 'online'" class="panel-button">
           <span class="icon">▣</span>
           <span>Mis partidas</span>
         </button>
@@ -67,7 +50,7 @@
       </div>
 
 
-      <div class="panel-section">
+      <div *ngIf="sesionService.gameMode === 'online'" class="panel-section">
 
         <h3>SOCIAL</h3>
 
@@ -91,9 +74,14 @@
           <span>Configuración</span>
         </button>
 
+        <button class="panel-button">
+          <span class="icon">❓</span>
+          <span>Ayuda</span>
+        </button>
+
         <button class="panel-button logout">
           <span class="icon">⇥</span>
-          <span>Cerrar sesión</span>
+          <span>{{ sesionService.gameMode }}</span>
         </button>
 
       </div>

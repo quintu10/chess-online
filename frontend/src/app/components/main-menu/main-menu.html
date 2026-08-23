@@ -19,7 +19,7 @@
         </span>
       </button>
 
-      <button class="menu-button local-button" routerLink="jugar-local">
+      <button class="menu-button local-button" (click)="openLocalGame()">
         <span class="button-icon">♟</span>
         <span class="button-text">
           <strong>Jugar local</strong>
@@ -39,6 +39,57 @@
       <button class="account-button register-button">
         <span class="account-icon">+</span>
         <span>Registrarse</span>
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Modal juego local -->
+<div class="modal-overlay" *ngIf="showLocalGameModal">
+
+  <div class="local-game-modal">
+
+    <div class="modal-header">
+      <span class="modal-icon">♟</span>
+      <h2>JUEGO LOCAL</h2>
+    </div>
+
+    <div class="modal-content">
+
+      <label for="playerName">
+        Ingresá tu nombre
+      </label>
+
+      <input
+        id="playerName"
+        type="text"
+        [(ngModel)]="playerName"
+        placeholder="Tu nombre"
+        maxlength="20"
+        autocomplete="off"
+        (keyup.enter)="startLocalGame()"
+      >
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        class="modal-button cancel-button"
+        (click)="cancelLocalGame()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="modal-button accept-button"
+        [disabled]="!playerName.trim()"
+        (click)="startLocalGame()"
+      >
+        Aceptar
       </button>
 
     </div>
