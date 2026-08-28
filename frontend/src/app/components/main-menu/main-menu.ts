@@ -42,4 +42,12 @@ export class MainMenu {
 
     this.router.navigate(['/board']);
   }
+
+  openLogin(){
+    this.router.navigate(['/login']);
+  }
+
+  openRegister(){
+    this.router.navigate(['/register']);
+  }
 }

@@ -16,15 +16,16 @@ interface User {
 export function createUser(
   email: string,
   username: string,
-  password: string
+  password: string,
+  avatar: string | null = null
 ) {
   return bcrypt.hash(password, 10)
     .then(passwordHash => {
       return pool.query(
-        `INSERT INTO users (email, username, password_hash)
-         VALUES ($1, $2, $3)
+        `INSERT INTO users (email, username, password_hash, avatar)
+         VALUES ($1, $2, $3, $4)
          RETURNING id, email, username, avatar, created_at`,
-        [email, username, passwordHash]
+        [email, username, passwordHash, avatar]
       );
     });   
 }

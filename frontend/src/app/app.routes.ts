@@ -3,6 +3,8 @@ import { MainMenu } from './components/main-menu/main-menu';
 import { ChessBoard } from './components/chess-board/chess-board';
 import { boardGuard } from './guards/board-guard';
 import { GoogleRegister } from './components/google-register/google-register';
+import { Login } from './components/login/login';
+import { Register } from './components/register/register';
 
 export const routes: Routes = [
 
@@ -19,4 +21,12 @@ export const routes: Routes = [
         path: 'google-register',
         component: GoogleRegister
     },
+    {
+        path: 'login',
+        component: Login
+    },
+    {
+        path: 'register',
+        component: Register
+    }
 ];

@@ -1,5 +1,385 @@
-img {
-  display: block;
-  margin-top: 10px;
+.google-register {
+
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  background-color: #000;
+
+  background-image:
+
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.05) 25%,
+      rgba(0, 0, 0, 0.35) 45%,
+      rgba(0, 0, 0, 0.75) 60%,
+      rgba(0, 0, 0, 0.95) 72%,
+      #000 85%
+    ),
+
+    url('/assets/background-lampara.png');
+
+  background-size:
+    100% 100%,
+    auto 100%;
+
+  background-position:
+    center,
+    left center;
+
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.register-content {
+
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-left: 270px;
+
+  transform: translateY(-10px);
+}
+
+
+.register-content h1 {
+
+  margin: 0 0 28px 0;
+  padding: 0;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: clamp(42px, 4vw, 58px);
+
+  font-weight: 700;
+
+  letter-spacing: 4px;
+
+  color: #d4af37;
+
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 0 20px rgba(212, 175, 55, 0.18);
+}
+
+
+.register-card {
+
+  width: 390px;
+
+  padding: 30px 32px;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(45, 27, 15, 0.96),
+      rgba(12, 8, 5, 0.98)
+    );
+
+  border: 2px solid #4b2e18;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.75),
+    inset 0 0 20px rgba(255, 255, 255, 0.025);
+
+  color: #f0d9b5;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+.register-title {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-bottom: 22px;
+
+  color: #d4af37;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  letter-spacing: 2px;
+
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+
+.chess-icon {
+
+  font-size: 25px;
+
+  color: #d4af37;
+}
+
+
+/* =========================
+   USUARIO GOOGLE
+   ========================= */
+
+.google-user {
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  margin-bottom: 22px;
+}
+
+
+.avatar {
+
+  width: 64px;
+  height: 64px;
+
   border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 2px solid #6b4325;
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+
+.email {
+
+  margin: 10px 0 0;
+
+  font-size: 13px;
+
+  color: #9c7954;
+
+  text-align: center;
+
+  word-break: break-word;
+}
+
+
+/* =========================
+   LABELS
+   ========================= */
+
+.register-card label {
+
+  margin-bottom: 7px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #d1ad7a;
+}
+
+
+/* =========================
+   INPUTS
+   ========================= */
+
+.register-card input {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  margin-bottom: 15px;
+
+  background: rgba(20, 12, 7, 0.9);
+
+  border: 1px solid #5c3a20;
+
+  border-radius: 8px;
+
+  outline: none;
+
+  font-family: inherit;
+
+  font-size: 15px;
+
+  color: #f0d9b5;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+.register-card input::placeholder {
+
+  color: #806448;
+}
+
+
+.register-card input:focus {
+
+  background: rgba(28, 17, 10, 0.95);
+
+  border-color: #8a5a32;
+
+  box-shadow:
+    0 0 0 2px rgba(212, 175, 55, 0.08);
+}
+
+
+/* =========================
+   ERROR
+   ========================= */
+
+.error-message {
+
+  margin: -2px 0 15px;
+
+  text-align: center;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+
+  color: #d98b75;
+}
+
+
+/* =========================
+   BOTÓN
+   ========================= */
+
+.register-button {
+
+  width: 100%;
+
+  height: 48px;
+
+  margin-top: 3px;
+
+  border-radius: 7px;
+
+  border: 1px solid #8a5a32;
+
+  background:
+    linear-gradient(
+      145deg,
+      #6b4325,
+      #4b2e18
+    );
+
+  color: #f0d9b5;
+
+  font-family: inherit;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.35);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.register-button:hover {
+
+  background:
+    linear-gradient(
+      145deg,
+      #7a4e2b,
+      #5c391f
+    );
+
+  border-color: #b98f5d;
+
+  color: #f5dfbd;
+}
+
+
+.register-button:active {
+
+  transform: scale(0.97);
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 500px) {
+
+  .register-content {
+
+    margin-left: 0;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+  }
+
+  .register-card {
+
+    width: 100%;
+
+    max-width: 390px;
+
+    padding: 27px 25px;
+  }
+
+  .register-content h1 {
+
+    font-size: 40px;
+
+    margin-bottom: 24px;
+  }
+}
+.register-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.register-button:hover:disabled {
+  background:
+    linear-gradient(
+      145deg,
+      #6b4325,
+      #4b2e18
+    );
+
+  border-color: #8a5a32;
+  color: #f0d9b5;
+  transform: none;
 }

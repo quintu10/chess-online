@@ -9,7 +9,7 @@ import passport from 'passport';
 
 
 export function register(req: Request, res: Response) {
-  const { email, username, password } = req.body;
+  const { email, username, password, avatar } = req.body;
 
   if (!email || !username || !password) {
     return res.status(400).json({
@@ -17,7 +17,7 @@ export function register(req: Request, res: Response) {
     });
   }
 
-  return createUser(email, username, password)
+  return createUser(email, username, password, avatar || null)
     .then(result => {
       res.status(201).json({
         message: 'Usuario creado correctamente',
@@ -28,8 +28,19 @@ export function register(req: Request, res: Response) {
       console.error(error);
 
       if (error.code === '23505') {
+        
+        if (error.constraint === 'users_email_key') { 
+          return res.status(409).json({ 
+            message: 'El email ya está registrado' });
+          } 
+        
+        if (error.constraint === 'users_username_key') {
+          return res.status(409).json({ 
+            message: 'El nombre de usuario ya está en uso' }); 
+          }
+        
         return res.status(409).json({
-          message: 'El email o username ya está registrado'
+          message: 'El email o el nombre de usuario ya está registrado'
         });
       }
 
@@ -133,7 +144,7 @@ export function logout(req: Request, res: Response) {
     });
 }
 
-export function googleCallback(req: Request, res: Response) {
+export function googleCallback(req: Request, res: Response): void {
   const profile = req.user as any;
 
   const googleId = profile.id;
@@ -150,6 +161,8 @@ export function googleCallback(req: Request, res: Response) {
   findUserByGoogleId(googleId)
     .then(user => {
 
+      // CASO 1:
+      // Ya existe el usuario y ya tiene Google vinculado
       if (user) {
         return createSession(user.id)
           .then(token => {
@@ -165,52 +178,54 @@ export function googleCallback(req: Request, res: Response) {
               message: 'Inicio de sesion con Google exitoso',
               user
             });
-
-            return null;
           });
       }
 
-      return findUserByEmail(email);
-    })
-    .then(existingUser => {
+      // CASO 2 y 3:
+      // Google no está vinculado, buscamos por email
+      return findUserByEmail(email)
+        .then(existingUser => {
 
-      if (!existingUser) {
-        return createGooglePendingUser(
-          googleId,
-          email,
-          avatar
-        )
-          .then(token => {
+          // CASO 2:
+          // Existe una cuenta normal con ese email
+          if (existingUser) {
+            return linkGoogleAccount(
+              existingUser.id,
+              googleId,
+              avatar
+            )
+              .then(user => {
+                return createSession(user.id)
+                  .then(token => {
 
-            res.redirect(
-              `http://localhost:4200/google-register?token=${token}`
-            );
+                    res.cookie('session', token, {
+                      httpOnly: true,
+                      secure: false,
+                      sameSite: 'lax',
+                      maxAge: 7 * 24 * 60 * 60 * 1000
+                    });
 
-            return null;
-          });
-      }
+                    res.json({
+                      message: 'Cuenta de Google vinculada correctamente',
+                      user
+                    });
+                  });
+              });
+          }
 
-      return linkGoogleAccount(
-        existingUser.id,
-        googleId,
-        avatar
-      )
-        .then(user => createSession(user.id))
-        .then(token => {
+          // CASO 3:
+          // No existe ninguna cuenta con ese email
+          return createGooglePendingUser(
+            googleId,
+            email,
+            avatar
+          )
+            .then(token => {
 
-          res.cookie('session', token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-          });
-
-          res.json({
-            message: 'Cuenta de Google vinculada correctamente',
-            user: existingUser
-          });
-
-          return null;
+              res.redirect(
+                `http://localhost:4200/google-register?token=${token}`
+              );
+            });
         });
     })
     .catch(error => {
@@ -288,7 +303,7 @@ export function completeGoogleRegister(req: Request, res: Response){
 
       if(error.code === '23505'){
         return res.status(409).json({
-          message: 'El username ya esta en uso'
+          message: 'El nombre de usuario ya esta en uso'
         });
       }
 

@@ -1,0 +1,173 @@
+<div class="register">
+
+  <div class="register-content">
+
+    <h1>Chess Online</h1>
+
+    <div class="register-card">
+
+      <div class="register-title">
+        <span class="chess-icon">♟</span>
+        <span>CREAR CUENTA</span>
+      </div>
+
+      <div class="form-content">
+
+        <label for="email">
+        Email
+        </label>
+
+        <input
+        id="email"
+        type="email"
+        [(ngModel)]="email"
+        placeholder="Tu email"
+        autocomplete="off"
+        >
+
+        <label for="username">
+        Nombre de usuario
+        </label>
+
+        <input
+        id="username"
+        type="text"
+        [(ngModel)]="username"
+        placeholder="Tu nombre de usuario"
+        autocomplete="off"
+        >
+
+        <label for="password">
+        Contraseña
+        </label>
+
+        <input
+        id="password"
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Tu contraseña"
+        autocomplete="new-password"
+        >
+
+        <label for="confirmPassword">
+        Confirmar contraseña
+        </label>
+
+        <input
+        id="confirmPassword"
+        type="password"
+        [(ngModel)]="confirmPassword"
+        placeholder="Repetí tu contraseña"
+        autocomplete="new-password"
+        (keyup.enter)="register()"
+        >
+
+        <div class="avatar-section">
+
+          <label class="avatar-label">
+            Avatar <span>(opcional)</span>
+          </label>
+
+          <div class="avatar-upload">
+
+            <label class="avatar-select" for="avatar">
+
+            <div class="avatar-preview" *ngIf="!avatar">
+                <span>♙</span>
+            </div>
+
+            <div class="avatar-preview has-avatar" *ngIf="avatar">
+                <img [src]="avatarPreview" alt="Avatar">
+            </div>
+
+            <div class="avatar-info">
+                <strong>{{ avatar ? 'Cambiar avatar' : 'Elegir avatar' }}</strong>
+                <small>
+                {{ avatar ? 'Seleccioná otra imagen' : 'Seleccioná una imagen' }}
+                </small>
+            </div>
+
+            </label>
+
+            <button
+              *ngIf="avatar"
+              type="button"
+              class="avatar-remove"
+              (click)="removeAvatar($event)"
+              title="Quitar avatar"
+            >
+              ×
+            </button>
+
+            <div
+              class="avatar-icon"
+              *ngIf="!avatar"
+              >
+              +
+            </div>
+
+          </div>
+
+          <input
+            #avatarInput
+            id="avatar"
+            type="file"
+            accept="image/*"
+            (change)="onAvatarSelected($event)"
+            hidden
+          >
+
+        </div>
+
+        <p class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+        </p>
+
+      </div>
+
+      <div class="register-actions">
+
+        <button
+        class="register-main-button"
+        type="button"
+        [disabled]="
+            !email.trim() ||
+            !username.trim() ||
+            !password.trim() ||
+            !confirmPassword.trim()
+        "
+        (click)="register()"
+        >
+        Registrarse
+        </button>
+
+        <div class="menu-divider">
+        <span>o</span>
+        </div>
+
+        <button
+        class="google-button"
+        type="button"
+        (click)="loginWithGoogle()"
+        >
+        <span class="google-icon">G</span>
+        <span>Continuar con Google</span>
+        </button>
+
+        <button
+        class="login-button"
+        type="button"
+        (click)="openLogin()"
+        >
+        <span>¿Ya tenés una cuenta?</span>
+        <strong>Iniciar sesión</strong>
+        </button>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
