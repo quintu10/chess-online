@@ -7,13 +7,13 @@ import { CommonModule } from '@angular/common';
 import { ChessEngine } from '../../services/chess-engine';
 import { OnInit } from '@angular/core';
 import { Move } from '../../models/move-model';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { GameResult } from '../game-result/game-result';
 import { Session } from '../../services/session';
 
 @Component({
   selector: 'app-chess-board',
-  imports: [NgFor, ChessPiece, NgIf, RouterLink, GameResult],
+  imports: [NgFor, ChessPiece, NgIf, GameResult],
   templateUrl: './chess-board.html',
   styleUrl: './chess-board.scss',
 })
@@ -22,7 +22,7 @@ export class ChessBoard {
   rows = [8, 7, 6, 5, 4, 3, 2, 1];
   columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
-  constructor(private chessEngine: ChessEngine, public sesionService: Session){}
+  constructor(private chessEngine: ChessEngine, public sesionService: Session, private router: Router){}
   
   pieces: Piece[] = [];
   possibleMoves: string[] = [];
@@ -217,4 +217,9 @@ export class ChessBoard {
     }
   }
 
+  openMenu(): void{
+    this.router.navigate(['/'])
+  }
+
+  openCerrarSesionSelector():void{}
 }

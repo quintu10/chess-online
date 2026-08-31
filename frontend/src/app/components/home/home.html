@@ -1,0 +1,27 @@
+<div class="home">
+
+  <div class="home-card">
+
+
+<h1>Chess Online</h1>
+
+<p *ngIf="user">
+  Sesión iniciada como <strong>{{ user.username }}</strong>
+</p>
+
+<p *ngIf="!user">
+  No hay una sesión iniciada
+</p>
+
+<button *ngIf="user" (click)="logout()">
+  Cerrar sesión
+</button>
+
+<button *ngIf="!user" (click)="openLogin()">
+  Iniciar sesión
+</button>
+
+
+  </div>
+
+</div>

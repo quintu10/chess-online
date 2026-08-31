@@ -5,6 +5,7 @@ import { boardGuard } from './guards/board-guard';
 import { GoogleRegister } from './components/google-register/google-register';
 import { Login } from './components/login/login';
 import { Register } from './components/register/register';
+import { Home } from './components/home/home';
 
 export const routes: Routes = [
 
@@ -28,5 +29,9 @@ export const routes: Routes = [
     {
         path: 'register',
         component: Register
+    },
+    {
+        path: 'home',
+        component: Home
     }
 ];

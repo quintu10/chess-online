@@ -25,7 +25,7 @@ export class Login {
     }
 
     this.http.post<any>(
-      'http://127.0.0.1:3000/auth/login',
+      'http://localhost:3000/auth/login',
       {
         email: this.email,
         password: this.password
@@ -38,19 +38,24 @@ export class Login {
       next: response => {
         console.log('Usuario logueado correctamente', response);
         this.errorMessage = '';
+        this.openHome();
       },
       error: error => {
         console.error('Error iniciando sesion', error);
-        this.errorMessage = 'Contraseña incorrecta';
+        this.errorMessage = error.error.message;
       }
     });
   }
   
   loginWithGoogle():void{
-    window.location.href= 'http://127.0.0.1:3000/auth/google';
+    window.location.href= 'http://localhost:3000/auth/google';
   }
 
   openRegister(): void{
     this.router.navigate(['/register']);
+  }
+
+  openHome(): void{
+    this.router.navigate(['/home']);
   }
 }

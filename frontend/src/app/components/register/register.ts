@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-register',
   imports: [FormsModule,NgIf],
@@ -53,7 +54,7 @@ export class Register {
     }
       
     this.http.post<any>(
-      'http://127.0.0.1:3000/auth/register',
+      'http://localhost:3000/auth/register',
       formData,
       {
         withCredentials: true
@@ -63,7 +64,7 @@ export class Register {
       next: response => {
         console.log('Usuario registrado correctamente', response);
         this.errorMessage= '';
-        this.openLogin();
+        this.login();
       },
       error: error => {
         console.error('Error registrando usuario', error);
@@ -94,11 +95,7 @@ export class Register {
   }
 
   loginWithGoogle():void{
-    window.location.href= 'http://127.0.0.1:3000/auth/google';
-  }
-
-  openLogin(){
-    this.router.navigate(['/login']);
+    window.location.href= 'http://localhost:3000/auth/google';
   }
 
   isValidEmail(): boolean{
@@ -144,4 +141,41 @@ export class Register {
       input.value = '';
     }
   }
+
+  login():void{
+    if(!this.email.trim() || !this.password.trim()){
+      return;
+    }
+
+    this.http.post<any>(
+      'http://localhost:3000/auth/login',
+      {
+        email: this.email,
+        password: this.password
+      },
+      {
+        withCredentials: true
+      }
+    )
+    .subscribe({
+      next: response => {
+        console.log('Usuario logueado correctamente', response);
+        this.errorMessage = '';
+        this.openHome();
+      },
+      error: error => {
+        console.error('Error iniciando sesion', error);
+        this.errorMessage = 'Contraseña incorrecta';
+      }
+    });
+  }
+ 
+  openLogin(){
+    this.router.navigate(['/login']);
+  }
+
+  openHome(){
+    this.router.navigate(['/home']);
+  }
+
 }

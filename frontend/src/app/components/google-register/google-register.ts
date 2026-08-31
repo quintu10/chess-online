@@ -34,7 +34,7 @@ export class GoogleRegister implements OnInit {
     }
 
     this.http.get<any>(
-      `http://127.0.0.1:3000/auth/google/pending?token=${this.token}`,
+      `http://localhost:3000/auth/google/pending?token=${this.token}`,
       {
         withCredentials: true
       }
@@ -87,7 +87,7 @@ export class GoogleRegister implements OnInit {
     }
 
     this.http.post<any>(
-      'http://127.0.0.1:3000/auth/google/register',
+      'http://localhost:3000/auth/google/register',
       {
         token: this.token,
         username: this.username.trim(),
@@ -101,6 +101,7 @@ export class GoogleRegister implements OnInit {
       next: response => {
         console.log('Registro completado', response);
         this.errorMessage = '';
+        this.login();
       },
 
       error: error => {
@@ -123,6 +124,38 @@ export class GoogleRegister implements OnInit {
     }
 
     return true;
+  }
+
+  login():void{
+    if(!this.email.trim() || !this.password.trim()){
+      return;
+    }
+
+    this.http.post<any>(
+      'http://localhost:3000/auth/login',
+      {
+        email: this.email,
+        password: this.password
+      },
+      {
+        withCredentials: true
+      }
+    )
+    .subscribe({
+      next: response => {
+        console.log('Usuario logueado correctamente', response);
+        this.errorMessage = '';
+        this.openHome();
+      },
+      error: error => {
+        console.error('Error iniciando sesion', error);
+        this.errorMessage = 'Contraseña incorrecta';
+      }
+    });
+  }
+
+  openHome():void{
+    this.router.navigate(['/home']);
   }
 
 }

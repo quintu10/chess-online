@@ -79,9 +79,14 @@
           <span>Ayuda</span>
         </button>
 
-        <button class="panel-button logout">
+        <button *ngIf="sesionService.gameMode === 'offline'" class="panel-button logout" (click)="openMenu()">
           <span class="icon">⇥</span>
-          <span>{{ sesionService.gameMode }}</span>
+          <span>Salir</span>
+        </button>
+
+        <button *ngIf="sesionService.gameMode === 'online'" class="panel-button logout" (click)="openCerrarSesionSelector()">
+          <span class="icon">⇥</span>
+          <span>Cerrar sesion</span>
         </button>
 
       </div>

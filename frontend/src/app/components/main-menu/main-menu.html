@@ -1,4 +1,10 @@
-<div class="main-menu">
+<div *ngIf="loading">
+
+  <p>Cargando...</p>
+
+</div>
+
+<div *ngIf="!loading" class="main-menu">
 
   <div class="menu-content">
 
@@ -11,7 +17,7 @@
         <span>JUGAR</span>
       </div>
 
-      <button class="menu-button online-button">
+      <button class="menu-button online-button"(click)="openHome()">
         <span class="button-icon">👥</span>
         <span class="button-text">
           <strong>Jugar en línea</strong>
@@ -31,14 +37,42 @@
         <span>o</span>
       </div>
 
-      <button class="account-button" (click)="openLogin()">
+      <button *ngIf="!user" class="account-button" (click)="openLogin()">
         <span class="account-icon">♙</span>
         <span>Iniciar sesión</span>
       </button>
 
-      <button class="account-button register-button" (click)="openRegister()">
+      <button *ngIf="!user" class="account-button register-button" (click)="openRegister()">
         <span class="account-icon">+</span>
         <span>Registrarse</span>
+      </button>
+
+      <div class="account-user" *ngIf="user">
+
+        <div class="user-avatar">
+          <img
+            [src]="user.avatar"
+            alt="Avatar"
+          >
+          
+
+          <span *ngIf="!user.avatar">♙</span>
+        </div>
+
+        <div class="user-info">
+          <small>Sesión iniciada como</small>
+          <strong>{{ user.username }}</strong>
+        </div>
+
+      </div>
+
+      <button
+        class="account-button logout-button"
+        (click)="logout()"
+        *ngIf="user"
+      >
+        <span class="account-icon">↪</span>
+        <span>Cerrar sesión</span>
       </button>
 
     </div>

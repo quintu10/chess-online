@@ -89,6 +89,8 @@ export function login(req: Request, res: Response) {
 }
 
 export function me(req: Request, res: Response) {
+  console.log('COOKIES:', req.cookies);
+  console.log('SESSION:', req.cookies.session);
   const token = req.cookies.session;
 
   if (!token) {
@@ -174,10 +176,7 @@ export function googleCallback(req: Request, res: Response): void {
               maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
-            res.json({
-              message: 'Inicio de sesion con Google exitoso',
-              user
-            });
+            res.redirect('http://localhost:4200/board');
           });
       }
 
@@ -205,10 +204,7 @@ export function googleCallback(req: Request, res: Response): void {
                       maxAge: 7 * 24 * 60 * 60 * 1000
                     });
 
-                    res.json({
-                      message: 'Cuenta de Google vinculada correctamente',
-                      user
-                    });
+                    res.redirect('http://localhost:4200/board');
                   });
               });
           }
@@ -233,9 +229,7 @@ export function googleCallback(req: Request, res: Response): void {
       console.error(error);
 
       if (!res.headersSent) {
-        res.status(500).json({
-          message: 'Error procesando el inicio de sesion con Google'
-        });
+        res.redirect('http://localhost:4200/login?error=google');
       }
     });
 }
