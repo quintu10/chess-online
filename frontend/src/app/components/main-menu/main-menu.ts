@@ -44,7 +44,16 @@ export class MainMenu implements OnInit{
   }
 
   openLocalGame(): void{
-    this.showLocalGameModal = true;
+    if(!this.user){
+      this.showLocalGameModal = true;
+      return;  
+    }
+
+    this.sesionService.playerName = this.user.username;
+    this.sesionService.gameMode = 'offline';
+
+    this.router.navigate(['/board'])
+    
   }
 
   cancelLocalGame(): void{

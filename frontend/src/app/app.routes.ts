@@ -6,6 +6,7 @@ import { GoogleRegister } from './components/google-register/google-register';
 import { Login } from './components/login/login';
 import { Register } from './components/register/register';
 import { Home } from './components/home/home';
+import { authGuardGuard } from './guards/auth-guard-guard';
 
 export const routes: Routes = [
 
@@ -16,7 +17,7 @@ export const routes: Routes = [
     {   
         path: 'board',
         component: ChessBoard,
-        canActivate: [boardGuard]
+        canActivate: [boardGuard],
     },
     {
         path: 'google-register',
@@ -32,6 +33,7 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        component: Home
+        component: Home,
+        canActivate: [authGuardGuard]
     }
 ];

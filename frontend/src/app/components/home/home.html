@@ -1,27 +1,328 @@
 <div class="home">
 
-  <div class="home-card">
+  <div class="background-lamp"></div>
+  <div class="background-overlay"></div>
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="home-header">
+
+    <h1 (click)="openHome()">
+      Chess Online
+    </h1>
+
+    <!-- USUARIO -->
+
+    <div class="user-menu" *ngIf="user">
+
+      <button class="user-button">
+
+        <div class="user-avatar">
+
+          <img
+            *ngIf="user.avatar"
+            [src]="user.avatar"
+            alt="Avatar"
+          >
+
+          <span *ngIf="!user.avatar">
+            ♙
+          </span>
+
+        </div>
+
+        <div class="user-name">
+          <span>Jugando como</span>
+          <strong>{{ user.username }}</strong>
+        </div>
+
+        <span class="user-arrow">
+          ▾
+        </span>
+
+      </button>
+
+      <!-- DROPDOWN -->
+
+      <div class="user-dropdown">
+
+        <div class="dropdown-user">
+
+          <div class="dropdown-avatar">
+
+            <img
+              *ngIf="user.avatar"
+              [src]="user.avatar"
+              alt="Avatar"
+            >
+
+            <span *ngIf="!user.avatar">
+              ♙
+            </span>
+
+          </div>
+
+          <div>
+            <strong>{{ user.username }}</strong>
+            <small>{{ user.email }}</small>
+          </div>
+
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <button class="dropdown-item">
+          <span>♙</span>
+          Mi perfil
+        </button>
+
+        <button
+          class="dropdown-item logout-item"
+          (click)="logout()"
+        >
+          <span>↪</span>
+          Cerrar sesión
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
 
 
-<h1>Chess Online</h1>
+  <!-- =====================================================
+       CONTENIDO
+       ===================================================== -->
 
-<p *ngIf="user">
-  Sesión iniciada como <strong>{{ user.username }}</strong>
-</p>
+  <main class="home-content">
 
-<p *ngIf="!user">
-  No hay una sesión iniciada
-</p>
+    <!-- BIENVENIDA -->
 
-<button *ngIf="user" (click)="logout()">
-  Cerrar sesión
-</button>
+    <section class="welcome">
 
-<button *ngIf="!user" (click)="openLogin()">
-  Iniciar sesión
-</button>
+      <span class="eyebrow">
+        PARTIDAS EN LÍNEA
+      </span>
+
+      <h2>
+        ¿Listo para jugar?
+      </h2>
+
+      <p>
+        Enfrentate a jugadores de todo el mundo
+        y demostrales quién domina el tablero.
+      </p>
+
+    </section>
 
 
-  </div>
+    <!-- =====================================================
+         ACCIÓN PRINCIPAL
+         ===================================================== -->
+
+    <section class="online-card">
+
+      <div class="card-decoration left">
+        ♜
+      </div>
+
+      <div class="card-center">
+
+        <div class="chess-symbol">
+          ♔
+        </div>
+
+        <h3>
+          JUGAR
+        </h3>
+
+        <p>
+          Elegí cómo querés jugar
+        </p>
+
+        <div class="play-actions">
+
+          <!-- ONLINE -->
+
+          <button
+            class="play-button primary-play"
+            (click)="startOnlineGame()"
+          >
+
+            <span>
+              Jugar en línea
+            </span>
+
+            <strong>
+              →
+            </strong>
+
+          </button>
+
+          <!-- LOCAL -->
+
+          <button
+            class="play-button local-play"
+            (click)="startLocalGame()"
+          >
+
+            <span>
+              Jugar local
+            </span>
+
+            <strong>
+              ♟
+            </strong>
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="card-decoration right">
+        ♚
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ACCESOS
+         ===================================================== -->
+
+    <section class="quick-links">
+
+      <!-- CLASIFICACIÓN -->
+
+      <button
+        class="link-card"
+        type="button"
+        (click)="openRanking()"
+      >
+
+        <span class="link-icon">
+          ♛
+        </span>
+
+        <span class="link-content">
+
+          <strong>
+            Clasificación
+          </strong>
+
+          <small>
+            Mirá el ranking de jugadores
+          </small>
+
+        </span>
+
+        <span class="link-arrow">
+          →
+        </span>
+
+      </button>
+
+
+      <!-- CÓMO JUGAR -->
+
+      <button
+        class="link-card"
+        type="button"
+        (click)="openHowToPlay()"
+      >
+
+        <span class="link-icon">
+          ?
+        </span>
+
+        <span class="link-content">
+
+          <strong>
+            Cómo jugar
+          </strong>
+
+          <small>
+            Reglas y funcionamiento
+          </small>
+
+        </span>
+
+        <span class="link-arrow">
+          →
+        </span>
+
+      </button>
+
+
+      <!-- QUIÉNES SOMOS -->
+
+      <button
+        class="link-card"
+        type="button"
+        (click)="openAbout()"
+      >
+
+        <span class="link-icon">
+          ♙
+        </span>
+
+        <span class="link-content">
+
+          <strong>
+            Quiénes somos
+          </strong>
+
+          <small>
+            Conocé el proyecto
+          </small>
+
+        </span>
+
+        <span class="link-arrow">
+          →
+        </span>
+
+      </button>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="home-footer">
+
+      <span>♞</span>
+
+      <div></div>
+
+      <button type="button">
+        Contacto
+      </button>
+
+      <span>·</span>
+
+      <button type="button">
+        Términos
+      </button>
+
+      <span>·</span>
+
+      <button type="button">
+        Privacidad
+      </button>
+
+      <div></div>
+
+      <span>♞</span>
+
+    </footer>
+
+  </main>
 
 </div>

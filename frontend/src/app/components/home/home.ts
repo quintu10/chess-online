@@ -37,9 +37,6 @@ export class Home implements OnInit{
     });
   }
   
-  openLogin(): void{
-    this.router.navigate(['/login']);
-  }
 
   logout():void{
     if(!this.user){
@@ -58,13 +55,41 @@ export class Home implements OnInit{
         console.log("Sesion cerrada correctamente");
         this.user = null;
         this.errorMessage= '';
-        this.openLogin();
+        this.openMenu();
       },
       error: error => {
         console.log("Error cerrando sesion");
         this.errorMessage = 'Error cerrando sesion';
       }
     });
+  }
+
+  startOnlineGame():void{
+
+  }
+  
+  startLocalGame():void{
+
+  }
+
+  openMenu():void{
+    this.router.navigate(['/']);
+  }
+
+  openHome():void{
+    this.router.navigate(['/home']);
+  }
+
+  openAbout():void{
+    this.router.navigate(['/home']);
+  }
+
+  openHowToPlay():void{
+    this.router.navigate(['/home']);
+  }
+
+  openRanking():void{
+    this.router.navigate(['/home']);
   }
 
 }

@@ -176,7 +176,7 @@ export function googleCallback(req: Request, res: Response): void {
               maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
-            res.redirect('http://localhost:4200/board');
+            res.redirect('http://localhost:4200/home');
           });
       }
 
@@ -204,7 +204,7 @@ export function googleCallback(req: Request, res: Response): void {
                       maxAge: 7 * 24 * 60 * 60 * 1000
                     });
 
-                    res.redirect('http://localhost:4200/board');
+                    res.redirect('http://localhost:4200/home');
                   });
               });
           }

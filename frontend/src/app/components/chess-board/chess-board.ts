@@ -221,5 +221,10 @@ export class ChessBoard {
     this.router.navigate(['/'])
   }
 
+  
+  openHome(): void{
+    this.router.navigate(['/home'])
+  }
+
   openCerrarSesionSelector():void{}
 }

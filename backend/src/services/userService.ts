@@ -71,7 +71,10 @@ export function getCurrentUser(token: string) {
     const tokenHash = crypto
         .createHash('sha256')
         .update(token)
-        .digest('hex'); 
+        .digest('hex');
+        
+    console.log('TOKEN RECIBIDO:', token);
+    console.log('TOKEN HASH CALCULADO:', tokenHash);
 
     return pool.query(
         `SELECT
@@ -190,76 +193,6 @@ export function createSession(userId: string) {
   .then(() => token);
 }
 
-export function loginWithGoogle(
-  googleId: string,
-  email: string,
-  username: string,
-  avatar: string|null
-) {
-  
-  return pool.query(
-    `SELECT id, email, username, avatar
-    FROM users
-    WHERE google_id = $1`,
-    [googleId]
-  )
-  .then(result =>{
-    if(result.rows.length > 0){
-      return result.rows[0];
-    }
-
-    return pool.query(
-      `SELECT id, email, username, avatar
-      FROM users 
-      WHERE email = $1`,
-      [email]
-    )
-  })
-  .then(result  =>{
-    if(result.rows.length > 0){
-      const user = result.rows[0];
-
-      return pool.query(
-        `UPDATE users
-        SET google_id = $1,
-            update_at =  NOW()
-        WHERE id = $2
-        RETURNING id, email, username, avatar`,
-        [googleId, user.id]
-      )
-      .then(result => result.rows[0]);
-    }
-
-    return pool.query(
-      `INSERT INTO users
-        (email, username, password_hash, avatar, google_id )
-      VALUES($1, $2, NULL, $3, $4)
-      RETURNING email, username, avatar, google_id`,
-      [email, username, avatar, googleId]
-    )
-    .then(result => result.rows[0]);
-  })
-  .then(user => {
-    const token = crypto.randomBytes(32).toString('hex');
-
-    const tokenHash = crypto
-      .createHash('sha256')
-      .update(token)
-      .digest('hex');
-    
-    return pool.query(
-      `INSERT INTO sessions
-        (user_id, token_hash, expires_at)
-      VALUES($1, $2, NOW())`,
-      [user.id, tokenHash]
-    )
-    .then(() => ({
-      token, 
-      user
-    }));
-  });
-
-}
 
 export function createGooglePendingUser(googleId: string, email: string, avatar: string | null){
   const token = crypto.randomBytes(32).toString('hex');
