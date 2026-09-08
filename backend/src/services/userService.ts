@@ -5,6 +5,9 @@ import { queryObjects } from 'v8';
 import { Result } from 'pg';
 import { error } from 'console';
 import { session } from 'passport';
+import { response } from 'express';
+import { buffer } from 'stream/consumers';
+import { imagekit } from '../config/imagekit';
 
 interface User {
   id: string;
@@ -278,4 +281,24 @@ export function completeGoogleRegistration(token: string, username: string, pass
       user
     }));
   });
+}
+
+export function uploadGoogleAvatar(avatarUrl: string){
+  return fetch(avatarUrl)
+    .then(response => {
+      if(!response.ok){
+        throw new Error('GOOGLE_AVATAR_DOWNLOAD_ERROR');
+      }
+
+      return response.arrayBuffer();
+    })
+    .then(buffer => {
+      return imagekit.upload({
+        file: Buffer.from(buffer),
+        fileName: `google-${crypto.randomBytes(8).toString('hex')}.jpg`,
+        folder: '/avatars'
+      });
+    })
+    .then(result => result.url);
+
 }

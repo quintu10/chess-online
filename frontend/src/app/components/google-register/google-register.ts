@@ -101,7 +101,7 @@ export class GoogleRegister implements OnInit {
       next: response => {
         console.log('Registro completado', response);
         this.errorMessage = '';
-        this.login();
+        this.openHome();
       },
 
       error: error => {
@@ -124,34 +124,6 @@ export class GoogleRegister implements OnInit {
     }
 
     return true;
-  }
-
-  login():void{
-    if(!this.email.trim() || !this.password.trim()){
-      return;
-    }
-
-    this.http.post<any>(
-      'http://localhost:3000/auth/login',
-      {
-        email: this.email,
-        password: this.password
-      },
-      {
-        withCredentials: true
-      }
-    )
-    .subscribe({
-      next: response => {
-        console.log('Usuario logueado correctamente', response);
-        this.errorMessage = '';
-        this.openHome();
-      },
-      error: error => {
-        console.error('Error iniciando sesion', error);
-        this.errorMessage = 'Contraseña incorrecta';
-      }
-    });
   }
 
   openHome():void{

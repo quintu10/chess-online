@@ -2,14 +2,17 @@ import { Request, Response } from 'express';
 import { createUser,loginUser,getCurrentUser,logOutUser,
          findUserByEmail, findUserByGoogleId, linkGoogleAccount,
          createSession,createGooglePendingUser, 
-         getGooglePendingUser, completeGoogleRegistration
+         getGooglePendingUser, completeGoogleRegistration,
+         uploadGoogleAvatar
 } from '../services/userService';
 import { error } from 'console';
 import passport from 'passport';
+import ImageKit from 'imagekit';
+import { imagekit } from '../config/imagekit';
 
 
 export function register(req: Request, res: Response) {
-  const { email, username, password, avatar } = req.body;
+  const { email, username, password } = req.body;
 
   if (!email || !username || !password) {
     return res.status(400).json({
@@ -17,7 +20,20 @@ export function register(req: Request, res: Response) {
     });
   }
 
-  return createUser(email, username, password, avatar || null)
+  const uploadAvatar = req.file
+    ? imagekit.upload({
+        file: req.file.buffer,
+        fileName: req.file.originalname,
+        folder: '/avatars'
+      })
+    : Promise.resolve(null);
+
+  return uploadAvatar
+    .then(result => {
+      const avatar = result ? result.url : null;
+
+      return createUser(email, username, password, avatar);
+    })
     .then(result => {
       res.status(201).json({
         message: 'Usuario creado correctamente',
@@ -28,17 +44,19 @@ export function register(req: Request, res: Response) {
       console.error(error);
 
       if (error.code === '23505') {
-        
-        if (error.constraint === 'users_email_key') { 
-          return res.status(409).json({ 
-            message: 'El email ya está registrado' });
-          } 
-        
+
+        if (error.constraint === 'users_email_key') {
+          return res.status(409).json({
+            message: 'El email ya está registrado'
+          });
+        }
+
         if (error.constraint === 'users_username_key') {
-          return res.status(409).json({ 
-            message: 'El nombre de usuario ya está en uso' }); 
-          }
-        
+          return res.status(409).json({
+            message: 'El nombre de usuario ya está en uso'
+          });
+        }
+
         return res.status(409).json({
           message: 'El email o el nombre de usuario ya está registrado'
         });
@@ -188,33 +206,45 @@ export function googleCallback(req: Request, res: Response): void {
           // CASO 2:
           // Existe una cuenta normal con ese email
           if (existingUser) {
-            return linkGoogleAccount(
-              existingUser.id,
-              googleId,
-              avatar
+            return (avatar
+              ? uploadGoogleAvatar(avatar)
+              : Promise.resolve(null)
             )
-              .then(user => {
-                return createSession(user.id)
-                  .then(token => {
+            .then(avatarUrl => {
+              return linkGoogleAccount(
+                existingUser.id,
+                googleId,
+                avatarUrl
+              )
+                .then(user => {
+                  return createSession(user.id)
+                    .then(token => {
 
-                    res.cookie('session', token, {
-                      httpOnly: true,
-                      secure: false,
-                      sameSite: 'lax',
-                      maxAge: 7 * 24 * 60 * 60 * 1000
+                      res.cookie('session', token, {
+                        httpOnly: true,
+                        secure: false,
+                        sameSite: 'lax',
+                        maxAge: 7 * 24 * 60 * 60 * 1000
+                      });
+
+                      res.redirect('http://localhost:4200/home');
                     });
+                });
+            });
 
-                    res.redirect('http://localhost:4200/home');
-                  });
-              });
           }
 
           // CASO 3:
           // No existe ninguna cuenta con ese email
-          return createGooglePendingUser(
+          return(avatar
+            ? uploadGoogleAvatar(avatar)
+            : Promise.resolve(null)
+          )
+          .then(avatarUrl => {
+            return createGooglePendingUser(
             googleId,
             email,
-            avatar
+            avatarUrl
           )
             .then(token => {
 
@@ -222,6 +252,9 @@ export function googleCallback(req: Request, res: Response): void {
                 `http://localhost:4200/google-register?token=${token}`
               );
             });
+
+          })
+
         });
     })
     .catch(error => {
