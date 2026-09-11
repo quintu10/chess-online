@@ -6,6 +6,7 @@ import { Session } from '../../services/session';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { SocketService } from '../../services/socket-service';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MainMenu implements OnInit{
 
-  constructor(private sesionService: Session, private router: Router, private http: HttpClient){}
+  constructor(private sesionService: Session, private router: Router, private http: HttpClient, private socket: SocketService){}
 
   showLocalGameModal = false;
   playerName = '';

@@ -10,6 +10,10 @@ import { Move } from '../../models/move-model';
 import { Router, RouterLink } from "@angular/router";
 import { GameResult } from '../game-result/game-result';
 import { Session } from '../../services/session';
+import { HttpClient } from '@angular/common/http';
+import { onlineGameService } from '../../services/online-game';
+import { SocketService } from '../../services/socket-service';
+
 
 @Component({
   selector: 'app-chess-board',
@@ -17,17 +21,22 @@ import { Session } from '../../services/session';
   templateUrl: './chess-board.html',
   styleUrl: './chess-board.scss',
 })
-export class ChessBoard {
+export class ChessBoard{
 
   rows = [8, 7, 6, 5, 4, 3, 2, 1];
   columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
-  constructor(private chessEngine: ChessEngine, public sesionService: Session, private router: Router){}
+  constructor(private chessEngine: ChessEngine, public sesionService: Session, private router: Router, private http: HttpClient,
+              private onlineGame: onlineGameService, private socketService: SocketService){}
   
+  user: any | null = null; 
+  errorMessage: string = '';
+
   pieces: Piece[] = [];
   possibleMoves: string[] = [];
 
   newGameConfirmation: boolean = false;
+  logoutConfirmation: boolean = false;
   
   moveHistory: string[] = [];
 
@@ -38,9 +47,33 @@ export class ChessBoard {
   gameResult: 'white' | 'black' | 'draw' | null = null;
 
   ngOnInit(){
+    this.http.get<any>(
+      'http://localhost:3000/auth/me',
+      {
+        withCredentials: true
+      }
+    )
+    .subscribe({
+      next: response => {
+        console.log('Usuario: ', response);
+        this.user = response.user;
+      },
+      error: error =>{
+        console.log('Error obteniendo usuario', error);
+        this.user = null;
+      }
+    })
+
     this.chessEngine.startGame()
 
     this.pieces = this.chessEngine.getGameState().pieces;
+
+    if(this.onlineGame.gameId){
+      this.socketService.joinGame(this.onlineGame.gameId);
+
+      console.log('Uniendose a la partida online:', this.onlineGame.gameId);
+    }
+
   }
 
   selectedPiece: Piece | null = null;
@@ -176,10 +209,10 @@ export class ChessBoard {
       
     this.moveHistory = [];
 
-    this.cerrarSelector();
+    this.cerrarSelectorNewGame();
   }
 
-  cerrarSelector(){
+  cerrarSelectorNewGame(){
     this.newGameConfirmation = false;
   }
 
@@ -226,5 +259,38 @@ export class ChessBoard {
     this.router.navigate(['/home'])
   }
 
-  openCerrarSesionSelector():void{}
+  openCerrarSesionSelector():void{
+    this.logoutConfirmation = true;
+  }
+  
+  cerrarSelectorLogout(){
+    this.logoutConfirmation = false;
+  }
+
+  logout() :void{
+    if(!this.user){
+      return;
+    }
+
+    this.http.post<any>(
+      'http://localhost:3000/auth/logout',
+      {},
+      {
+        withCredentials: true
+      }
+    )
+    .subscribe({
+      next: Response =>{
+        console.log('Sesion cerrada correctamente');
+        this.user = null;
+        this.errorMessage = '';
+        this.openMenu();
+      },
+      error: Error =>{
+        console.error('Error cerrando sesion');
+        this.errorMessage = 'Error cerrando sesion';
+      }
+      
+    })
+  }
 }

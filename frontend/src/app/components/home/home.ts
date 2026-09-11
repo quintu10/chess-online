@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { errorContext } from 'rxjs/internal/util/errorContext';
+import { Session } from '../../services/session';
+import { onlineGameService } from '../../services/online-game';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,7 @@ export class Home implements OnInit{
   user: any | null = null;
   errorMessage: string = '';
 
-  constructor(private router:Router, private http: HttpClient){}
+  constructor(private router:Router, private http: HttpClient,private sessionService: Session, private onlineGame: onlineGameService){}
 
   ngOnInit(): void {
     this.http.get<any>(
@@ -66,10 +68,38 @@ export class Home implements OnInit{
 
   startOnlineGame():void{
 
+    if(!this.user){
+      return;
+    }
+
+    this.http.post<any>(
+      'http://localhost:3000/games',
+      {
+        playerId: this.user.id,
+        timeControl:10 + 0,
+        increment: 0,
+        initialTime: 600
+      }
+    )
+    .subscribe({
+      next: game => {
+        console.log('Partida creada', game);
+
+        this.onlineGame.gameId = game.id;
+
+        this.router.navigate(['/board']);
+      },
+      error: error =>{
+        console.error('Error creando partida', error);
+      }
+    });
   }
   
   startLocalGame():void{
+    this.sessionService.playerName = this.user.username;
+    this.sessionService.gameMode = 'offline';
 
+    this.router.navigate(['/board'])
   }
 
   openMenu():void{

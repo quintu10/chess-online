@@ -8,6 +8,7 @@ import { session } from 'passport';
 import { response } from 'express';
 import { buffer } from 'stream/consumers';
 import { imagekit } from '../config/imagekit';
+import { fileURLToPathBuffer } from 'url';
 
 interface User {
   id: string;
@@ -300,5 +301,46 @@ export function uploadGoogleAvatar(avatarUrl: string){
       });
     })
     .then(result => result.url);
+}
 
+export function deleteAvatar(avatarUrl: string) {
+  const url = new URL(avatarUrl);
+
+  const pathParts = url.pathname.split('/').filter(Boolean);
+
+  pathParts.shift();
+
+  const filePath = '/' + pathParts.join('/');
+
+  const fileName = pathParts[pathParts.length - 1];
+
+  console.log('AVATAR VIEJO: ', avatarUrl);
+  console.log('FILE PATH: ', filePath);
+  console.log('FILE NAME; ', fileName);
+
+  return imagekit.listFiles({
+    path: '/avatars',
+    type: 'file',
+    searchQuery: `name:"${fileName}"`
+  })
+  .then(files => {
+    
+    console.log('ARCHIVOS ENCONTRADOS: ', files);
+
+    const file = files.find(item => 
+      'fileId' in item && 'filePath' in item && item.filePath === filePath
+    );
+
+    if (!file || !('fileId' in file)) {
+      throw new Error('AVATAR_NOT_FOUND');
+    }
+    
+    console.log('ARCHIVO ENCONTRADO: ', file);
+    console.log('FILE ID: ',file.fileId);
+    return imagekit.deleteFile(file.fileId);
+  })
+  .then(result => {
+    console.log('AVATAR ELIMINADO CORRECTAMENTE');
+    return result;
+  })
 }

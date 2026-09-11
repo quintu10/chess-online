@@ -3,7 +3,8 @@ import { createUser,loginUser,getCurrentUser,logOutUser,
          findUserByEmail, findUserByGoogleId, linkGoogleAccount,
          createSession,createGooglePendingUser, 
          getGooglePendingUser, completeGoogleRegistration,
-         uploadGoogleAvatar
+         uploadGoogleAvatar,
+         deleteAvatar
 } from '../services/userService';
 import { error } from 'console';
 import passport from 'passport';
@@ -206,6 +207,9 @@ export function googleCallback(req: Request, res: Response): void {
           // CASO 2:
           // Existe una cuenta normal con ese email
           if (existingUser) {
+
+            const oldAvatar = existingUser.avatar;
+
             return (avatar
               ? uploadGoogleAvatar(avatar)
               : Promise.resolve(null)
@@ -217,7 +221,17 @@ export function googleCallback(req: Request, res: Response): void {
                 avatarUrl
               )
                 .then(user => {
-                  return createSession(user.id)
+                  
+                  const deleteOldAvatar = oldAvatar
+                    ? deleteAvatar(oldAvatar).catch(error =>{
+                      console.error('Error eliminando avatar anterior:', error);
+                    })
+                    : Promise.resolve();
+
+                  return deleteOldAvatar
+                    .then(() => {
+                      return createSession(user.id);
+                    })
                     .then(token => {
 
                       res.cookie('session', token, {

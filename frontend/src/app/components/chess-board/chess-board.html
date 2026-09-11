@@ -1,12 +1,17 @@
 <div class="board-page">
   <h1 (click)="openHome()">Chess Online</h1>
 
-  <div class="game-mode">
+  <div *ngIf="sesionService.gameMode === 'offline'" class="game-mode">
     <span class="mode-icon">👥︎</span>
     <span>Partida local</span>
   </div>
 
-  <div class="user-status">
+  <div *ngIf="sesionService.gameMode === 'online'" class="game-mode">
+    <span class="mode-icon">👥︎</span>
+    <span>Partida online</span>
+  </div>
+
+  <div *ngIf="!user" class="user-status">
     <div class="profile-circle">
 
     </div>
@@ -21,6 +26,79 @@
     </div>
 
     <span class="user-arrow">▾</span>
+
+  </div>
+
+  <div class="board-user-menu" *ngIf="user">
+
+    <button class="board-user-button">
+
+      <div class="board-user-avatar">
+
+        <img
+          *ngIf="user.avatar"
+          [src]="user.avatar"
+          alt="Avatar"
+        >
+
+        <span *ngIf="!user.avatar">
+          ♙
+        </span>
+
+      </div>
+
+      <div class="board-user-name">
+        <span>Jugando como</span>
+        <strong>{{ user.username }}</strong>
+      </div>
+
+      <span class="board-user-arrow">
+        ▾
+      </span>
+
+    </button>
+
+    <div class="board-user-dropdown">
+
+      <div class="board-dropdown-user">
+
+        <div class="board-dropdown-avatar">
+
+          <img
+            *ngIf="user.avatar"
+            [src]="user.avatar"
+            alt="Avatar"
+          >
+
+          <span *ngIf="!user.avatar">
+            ♙
+          </span>
+
+        </div>
+
+        <div>
+          <strong>{{ user.username }}</strong>
+          <small>{{ user.email }}</small>
+        </div>
+
+      </div>
+
+      <div class="dropdown-divider"></div>
+
+      <button class="dropdown-item">
+        <span>♙</span>
+        Mi perfil
+      </button>
+
+      <button
+        class="dropdown-item logout-item"
+        (click)="openCerrarSesionSelector()"
+      >
+        <span>↪</span>
+        Cerrar sesión
+      </button>
+
+    </div>
 
   </div>
 
@@ -79,12 +157,12 @@
           <span>Ayuda</span>
         </button>
 
-        <button *ngIf="sesionService.gameMode === 'offline'" class="panel-button logout" (click)="openMenu()">
+        <button *ngIf="sesionService.gameMode === 'offline' && !user" class="panel-button logout" (click)="openMenu()">
           <span class="icon">⇥</span>
           <span>Salir</span>
         </button>
 
-        <button *ngIf="sesionService.gameMode === 'online'" class="panel-button logout" (click)="openCerrarSesionSelector()">
+        <button *ngIf="sesionService.gameMode === 'online' || user" class="panel-button logout" (click)="openCerrarSesionSelector()">
           <span class="icon">⇥</span>
           <span>Cerrar sesion</span>
         </button>
@@ -137,12 +215,32 @@
                   <p>¿Estás seguro de que querés comenzar una nueva partida?</p>
 
                   <div class="confirmation-buttons">
-                    <button class="cancel-button" (click)="cerrarSelector()">
+                    <button class="cancel-button" (click)="cerrarSelectorNewGame()">
                       Cancelar
                     </button>
 
                     <button class="confirm-button" (click)="confirmarNuevaPartida()">
                       Nueva partida
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="confirmation-modal" *ngIf="logoutConfirmation">
+                <div class="confirmation-content">
+
+                  <h2>¿Cerrar sesión?</h2>
+
+                  <p>¿Estás seguro de que querés cerrar sesión?</p>
+
+                  <div class="confirmation-buttons">
+                    <button class="cancel-button" (click)="cerrarSelectorLogout()">
+                      Cancelar
+                    </button>
+
+                    <button class="confirm-button" (click)="logout()">
+                      Cerrar sesión
                     </button>
                   </div>
 
@@ -200,11 +298,11 @@
             <span class="move-number"></span>
 
             <span class="white-move">
-              White
+              Blancas
             </span>
 
             <span class="black-move">
-              Black
+              Negras
             </span>
 
           </div>
