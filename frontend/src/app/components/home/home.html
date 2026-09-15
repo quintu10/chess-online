@@ -325,4 +325,29 @@
 
   </main>
 
+  <div
+    class="matchmaking-overlay"
+    *ngIf="searchingMatch"
+  >
+    <div class="matchmaking-modal">
+
+      <div class="matchmaking-spinner"></div>
+
+      <h2>Buscando rival...</h2>
+
+      <p>
+        Estamos buscando un jugador para tu partida
+      </p>
+
+      <button
+        type="button"
+        class="cancel-matchmaking"
+        (click)="cancelMatchmaking()"
+      >
+        Cancelar búsqueda
+      </button>
+
+    </div>
+  </div>
+
 </div>

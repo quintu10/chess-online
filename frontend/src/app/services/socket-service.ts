@@ -18,7 +18,17 @@ export class SocketService{
         return this.socket
     }
 
+    identifyUser(userId: string):void{
+        this.socket.emit('identify-user', userId);
+    }
+
     joinGame(gameId: string):void {
         this.socket.emit('join-game', gameId);
     }
+
+    onMatchFound(callback: (game: any) => void):void{
+        console.log('ESCUCHANDO MATCH-FOUND');
+        
+        this.socket.on('match-found', callback);
+    } 
 }

@@ -2,14 +2,18 @@ import { pool } from "../config/database"
 import { ChessEngine } from "../chess/engine/chess-engine";
 import { GameState } from "../chess/models/game-state-model";
 import { InitialPieces } from "../chess/data/initial-pieces";
-import { error } from "console";
+import { Pool,PoolClient } from "pg";
+import { create } from "node:domain";
+import { error } from "node:console";
+
 
 export function createGame(
-    playerId: string,
+    whitePlayerId: string,
+    blackPlayerId: string,
     timeControl: string,
     increment: number,
     initialTime: number,
-    boardState: GameState
+    database: Pool | PoolClient
 )
 {
 
@@ -20,9 +24,10 @@ export function createGame(
         lastMove: null
     }
 
-    return pool.query(
+    return database.query(
         `INSERT INTO games(
             white_player_id,
+            black_player_id,
             time_control,
             increment,
             white_time,
@@ -32,10 +37,11 @@ export function createGame(
             status,
             last_move_at
         )
-        VALUES($1, $2, $3, $4, $4, $5, 'white', 'WAITING', NOW())
+        VALUES($1, $2, $3, $4, $5, $5, $6, 'white', 'PLAYING', NOW())
         RETURNING * `,
         [
-            playerId,
+            whitePlayerId,
+            blackPlayerId,
             timeControl,
             increment,
             initialTime,
@@ -47,39 +53,6 @@ export function createGame(
     });
 }
 
-export function joinGame(
-    gameId: string,
-    playerId: string,
-    color: 'white' | 'black'
-)
-{
-
-    const playerColumn = 
-        color === 'white'
-        ? 'white_player_id'
-        : 'black_player_id';
-
-    return pool.query(
-        `UPDATE games
-        SET 
-            ${playerColumn} = $1,
-            status = 'PLAYING',
-            updated_at = NOW(),
-            last_move_at = NOW()
-        WHERE id = $2
-            AND status = 'WAITING'
-            AND ${playerColumn} IS NULL
-        RETURNING * `,
-        [playerId, gameId]
-    )
-    .then( result => {
-        if(result.rows.length === 0){
-            throw new Error('GAME_NOT_AVAILABLE');
-        }
-
-        return result.rows[0];
-    });
-}
 
 export function getGameById(gameId: string){
     
@@ -303,3 +276,190 @@ export function makeMove(
     });
 }
 
+
+export function joinMatchmaking(
+    userId: string,
+    timeControl: string,
+    increment: number,
+    initialTime: number
+){
+
+    return pool.connect()
+        .then(client => {
+            
+            return client.query('BEGIN')
+                .then(() => {
+
+                    return client.query(
+                        `INSERT INTO matchmaking_queue(
+                            user_id,
+                            time_control,
+                            increment,
+                            initial_time
+                        )
+                        VALUES($1,$2,$3,$4)
+                        RETURNING * `,
+                        [userId, timeControl, increment, initialTime]
+                    );
+
+                })
+                .then(result => {
+                    const matchmaking = result.rows[0];
+
+                    return client.query(
+                        `SELECT 
+                            users.elo
+                        FROM users
+                        WHERE id = $1`,
+                        [userId]
+                    )
+                    .then(userResult =>{
+                        if(userResult.rows.length === 0){
+                            throw new Error('USER_NOT_FOUND');
+                        }
+
+                        const userElo =  userResult.rows[0].elo;
+
+                        const joinedAt = new Date(matchmaking.joined_at);
+                        const now = new Date();
+
+                        const elapsedSeconds = Math.floor(
+                            (now.getTime() - joinedAt.getTime()) / 1000
+                        );
+
+                        let eloRange = 100;
+
+                        if(elapsedSeconds >= 30){
+                            eloRange = 300;
+                        }
+                        else if(elapsedSeconds >=20){
+                            eloRange = 200;
+                        }
+                        else if(elapsedSeconds >= 10){
+                            eloRange = 150;
+                        }
+
+                        return client.query(
+                            `SELECT 
+                                *,
+                                users.elo
+                            FROM matchmaking_queue
+                            INNER JOIN users
+                                ON users.id = matchmaking_queue.user_id
+                            WHERE matchmaking_queue.user_id <> $1
+                            AND matchmaking_queue.time_control = $2
+                            AND matchmaking_queue.increment  = $3
+                            AND matchmaking_queue.initial_time = $4
+                            AND users.elo BETWEEN $5 AND $6
+                            AND NOT EXISTS(
+                                SELECT 1
+                                FROM games
+                                WHERE status = 'PLAYING'
+                                AND (
+                                    (
+                                        white_player_id = $1
+                                        AND black_player_id = matchmaking_queue.user_id
+                                    )
+                                    OR
+                                    (
+                                        white_player_id = matchmaking_queue.user_id
+                                        AND black_player_id = $1
+                                    )
+                                )
+                            )
+                            ORDER BY joined_at ASC
+                            LIMIT 1
+                            FOR UPDATE OF matchmaking_queue SKIP LOCKED`,
+                            [
+                                userId,
+                                timeControl,
+                                increment,
+                                initialTime,
+                                userElo - eloRange,
+                                userElo + eloRange
+                            ]
+                        );
+                    });
+                })
+                .then(result => {
+                    
+                    if(result.rows.length === 0){
+                        
+                        return client.query('COMMIT')
+                            .then(() =>{
+                                return {
+                                    status: 'WAITING'
+                                };
+                            });
+                    }
+
+                    const oponent = result.rows[0];
+
+                    const whitePlayerId = Math.random() < 0.5
+                        ? oponent.user_id
+                        : userId;
+
+                    const blackPlayerId = whitePlayerId === userId ? oponent.user_id : userId;
+                    
+                    return createGame(
+                        whitePlayerId,
+                        blackPlayerId,
+                        timeControl,
+                        increment,
+                        initialTime,
+                        client
+                    )
+                    .then(game => {
+                        
+                        return client.query(
+                            `DELETE FROM matchmaking_queue
+                            WHERE user_id = $1
+                            OR user_id = $2`,
+                            [userId, oponent.user_id]
+                        )
+                        .then(() => {
+                            
+                            return client.query('COMMIT')
+                                .then(() => {
+                                    return {
+                                        status: 'MATCHED',
+                                        game
+                                    };
+                                });
+                        });
+                    });
+
+                })
+                .catch(error => {
+                    
+                    return client.query('ROLLBACK')
+                        .then(() => {
+                            throw error;
+                        });
+
+                })
+                .finally(() => {
+                    client.release();
+                });
+
+        });
+
+}
+
+
+export function cancelMatchmaking(userId: string){
+
+    return pool.query(
+        `DELETE FROM matchmaking_queue
+        WHERE user_id = $1`,
+        [userId]
+    )
+    .then(result => {
+
+        return {
+            cancelled: (result.rowCount ?? 0) > 0
+        };
+
+    });
+
+}

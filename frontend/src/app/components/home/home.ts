@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { errorContext } from 'rxjs/internal/util/errorContext';
 import { Session } from '../../services/session';
 import { onlineGameService } from '../../services/online-game';
+import { SocketService } from '../../services/socket-service';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,10 @@ export class Home implements OnInit{
   user: any | null = null;
   errorMessage: string = '';
 
-  constructor(private router:Router, private http: HttpClient,private sessionService: Session, private onlineGame: onlineGameService){}
+  searchingMatch: boolean = false;
+
+  constructor(private router:Router, private http: HttpClient,private sessionService: Session, private onlineGame: onlineGameService,
+              private socketService: SocketService){}
 
   ngOnInit(): void {
     this.http.get<any>(
@@ -31,6 +35,19 @@ export class Home implements OnInit{
       next : response => {
         console.log("Usuario: ", response)
         this.user = response.user;
+        console.log('IDENTIFICANDO SOCKET: ', this.user.id);
+        this.socketService.identifyUser(this.user.id);
+
+        this.socketService.onMatchFound((game) => {
+          console.log('MATCH ENCONTRADO: ', game);
+
+          this.searchingMatch = false;
+
+          this.onlineGame.gameId = game.id;
+
+          this.router.navigate(['/board']);
+        });
+        console.log('LISTENER MATCH-FOUND REGISTRADO');
       },
       error: error => {
         console.log("Error obteniendo usuario",error);
@@ -72,8 +89,10 @@ export class Home implements OnInit{
       return;
     }
 
+    this.searchingMatch = true;
+
     this.http.post<any>(
-      'http://localhost:3000/games',
+      'http://localhost:3000/games/matchmaking',
       {
         playerId: this.user.id,
         timeControl:10 + 0,
@@ -82,15 +101,29 @@ export class Home implements OnInit{
       }
     )
     .subscribe({
-      next: game => {
-        console.log('Partida creada', game);
+      next: response => {
+        console.log('Respuesta matchmaking: ', response);
 
-        this.onlineGame.gameId = game.id;
+        if(response.status === 'WAITING'){
+          console.log('Buscando rival...');
+          return;
+        }
 
-        this.router.navigate(['/board']);
+        if(response.status === 'MATCHED'){
+          console.log('Partida encontrada:' , response.game);
+
+          this.searchingMatch = false;
+
+          this.onlineGame.gameId = response.game.id;
+
+          this.router.navigate(['/board']);
+        }
+
       },
       error: error =>{
-        console.error('Error creando partida', error);
+        console.error('Error entrando al matchmaking', error);
+
+        this.searchingMatch = false;
       }
     });
   }
@@ -120,6 +153,33 @@ export class Home implements OnInit{
 
   openRanking():void{
     this.router.navigate(['/home']);
+  }
+
+  cancelMatchmaking():void{
+    
+    if(!this.user){
+      return;
+    }
+
+    this.http.delete<any>(
+      'http://localhost:3000/games/matchmaking',
+      {
+        body: {
+          userId: this.user.id
+        }
+      }
+    )
+    .subscribe({
+      next: response => {
+        console.log('Busqueda cancelada: ', response);
+
+        this.searchingMatch = false;
+      },
+      error: error => {
+        console.error('Error cancelando matchmaking: ', error);
+      }
+    });
+    
   }
 
 }

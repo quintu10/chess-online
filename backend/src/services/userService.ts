@@ -106,14 +106,35 @@ export function logOutUser(token: string) {
     const tokenHash = crypto
         .createHash('sha256')
         .update(token)
-        .digest('hex'); 
-
+        .digest('hex');
+        
     return pool.query(
-        `DELETE
-        FROM sessions
-        WHERE sessions.token_hash = $1`,
-        [tokenHash]
+      `SELECT user_id
+      FROM sessions
+      WHERE sessions.token_hash = $1`,
+      [tokenHash]
     )
+    .then(result => {
+      if(result.rows.length === 0){
+        return;
+      }
+
+      const userId = result.rows[0].user_id;
+
+      return pool.query(
+          `DELETE FROM matchmaking_queue
+          WHERE user_id = $1`,
+          [userId]
+      );
+    })
+    .then(() => {
+      return pool.query(
+          `DELETE
+          FROM sessions
+          WHERE sessions.token_hash = $1`,
+          [tokenHash]
+      );
+    });
 
 }
 
